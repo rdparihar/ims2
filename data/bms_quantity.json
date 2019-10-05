@@ -1,0 +1,51 @@
+[
+{
+  "model": "bms.quantity",
+  "pk": "D",
+  "fields": {
+    "quantity_bottles": 96
+  }
+},
+{
+  "model": "bms.quantity",
+  "pk": "L",
+  "fields": {
+    "quantity_bottles": 9
+  }
+},
+{
+  "model": "bms.quantity",
+  "pk": "N",
+  "fields": {
+    "quantity_bottles": 48
+  }
+},
+{
+  "model": "bms.quantity",
+  "pk": "P",
+  "fields": {
+    "quantity_bottles": 12
+  }
+},
+{
+  "model": "bms.quantity",
+  "pk": "Q",
+  "fields": {
+    "quantity_bottles": 24
+  }
+},
+{
+  "model": "bms.quantity",
+  "pk": "XG",
+  "fields": {
+    "quantity_bottles": 4
+  }
+},
+{
+  "model": "bms.quantity",
+  "pk": "Y",
+  "fields": {
+    "quantity_bottles": 150
+  }
+}
+]
