@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>BMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+   
+
+  </head>
+
+  <body>
+    <div id="starting">
+      <div class="container">
+        <div class="row">
+          <h1>List of Brands
+          <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addBrandModal">ADD ARTICLE</button>
+          </h1>
+          &emsp;
+          <div class="form-inline my-2 my-lg-0" style="margin-left: 40%;">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getBrands()">Search</button>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Heading</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="brand in brands">
+                <th scope="row">${brand.brand_id}</th>
+                <td>${brand.brand_name}</td>
+				<td>${brand.brand_description}</td>
+				<td>${brand.brand_p_cost}</td>
+				<td>${brand.brand_q_cost}</td>
+				<td>${brand.brand_n_cost}</td>
+				<td>${brand.brand_d_cost}</td>
+				<td>${brand.brand_l_cost}</td>
+				<td>${brand.brand_xg_cost}</td>
+				<td>${brand.brand_y_cost}</td>
+				<td>${brand.brand_p_sale}</td>
+				<td>${brand.brand_q_sale}</td>
+				<td>${brand.brand_n_sale}</td>
+				<td>${brand.brand_d_sale}</td>
+				<td>${brand.brand_l_sale}</td>
+				<td>${brand.brand_xg_sale}</td>
+				<td>${brand.brand_y_sale}</td>
+                <td>
+                  <button class="btn btn-info" v-on:click="getBrand(brand.brand_id)">Edit</button>
+                  <button class="btn btn-danger" v-on:click="deleteBrand(brand.brand_id)">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Add Brand Modal -->
+          <div class="modal fade" id="addBrandModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">ADD ARTICLE</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form v-on:submit.prevent="addBrand()">
+                <div class="modal-body">
+                    <div class="form-group">
+                      <label for="brand_name">Brand Code</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_id"
+                        placeholder="Enter Brand Code"
+                        v-model="newBrand.brand_id"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_name">Brand Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_name"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_name"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_description">Brand description</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_description"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_description"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="category_id">cat id</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="category_id"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.category_id"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_p_cost">Brand p cost</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_p_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_p_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_q_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_q_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_q_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_n_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_n_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_n_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_d_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_d_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_d_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_l_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_l_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_l_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_xg_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_xg_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_xg_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_y_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_y_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_y_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_p_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_p_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_p_sale"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_q_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_q_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_q_sale"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_n_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_n_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_n_sale"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_d_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_d_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_d_sale"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_l_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_l_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_l_sale"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_xg_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_xg_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_xg_sale"
+                        required="required" >
+                    </div>
+					<div class="form-group">
+                      <label for="brand_y_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_y_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="newBrand.brand_y_sale"
+                        required="required" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+                </form>
+              </div>
+            </div>
+            <div class="loading" v-if="loading===true">Loading&#8230;</div>
+          </div>
+          <!-- End of add brand modal -->
+          <!-- Edit Brand Modal -->
+          <div class="modal fade" id="editBrandModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">EDIT ARTICLE</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form v-on:submit.prevent="updateBrand()">
+                <div class="modal-body">
+                    <div class="form-group">
+                      <label for="brand_name">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_name"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_name"
+                        required="required" >
+                    </div>
+                       <div class="form-group">
+                      <label for="brand_name">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_name"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_name"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_description">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_description"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_description"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="category_id">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="category_id"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.category_id"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_p_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_p_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_p_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_q_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_q_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_q_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_n_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_n_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_n_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_d_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_d_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_d_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_l_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_l_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_l_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_xg_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_xg_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_xg_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_y_cost">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_y_cost"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_y_cost"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_p_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_p_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_p_sale"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_q_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_q_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_q_sale"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_n_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_n_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_n_sale"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_d_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_d_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_d_sale"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_l_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_l_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_l_sale"
+                        required="required" >
+                    </div>
+                    <div class="form-group">
+                      <label for="brand_xg_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_xg_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_xg_sale"
+                        required="required" >
+                    </div>
+					      <div class="form-group">
+                      <label for="brand_y_sale">Brand Heading</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="brand_y_sale"
+                        placeholder="Enter Brand Heading"
+                        v-model="currentBrand.brand_y_sale"
+                        required="required" >
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary" >Save changes</button>
+                </div>
+                </form>
+              </div>
+            </div>
+            <div class="loading" v-if="loading===true">Loading&#8230;</div>
+          </div>
+          <!-- End of edit brand modal -->
+
+        </div>
+      </div>
+      <div class="loading" v-if="loading===true">Loading&#8230;</div>
+
+    </div>
+
+  <!-- bootrtap js files -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  <!-- vue.js files -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+  <script type="text/javascript">
+    Vue.http.headers.common['X-CSRFToken'] = "{{ csrf_token }}";
+    new Vue({
+      el: '#starting',
+      delimiters: ['${','}'],
+      data: {
+        brands: [],
+        loading: true,
+        currentBrand: {},
+        message: null,
+        newBrand: {'brand_id' : null, 'brand_name' : null, 'brand_description' : null, 'category_id' : null, 'brand_p_cost' : null, 'brand_q_cost' : null, 'brand_n_cost' : null, 'brand_d_cost' : null, 'brand_l_cost' : null, 'brand_xg_cost' : null, 'brand_y_cost' : null, 'brand_p_sale' : null, 'brand_q_sale' : null, 'brand_n_sale' : null, 'brand_d_sale' : null, 'brand_l_sale' : null, 'brand_xg_sale' : null, 'brand_y_sale' : null },
+        search_term: '',
+      },
+      mounted: function() {
+        this.getBrands();
+      },
+      methods: {
+        getBrands: function() {
+          let api_url = '/api/brand/';
+          if(this.search_term!==''||this.search_term!==null) {
+            api_url = `/api/brand/?search=${this.search_term}`;
+          }
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.brands = response.data;
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        getBrand: function(id) {
+          this.loading = true;
+          this.$http.get(`/api/brand/${id}/`)
+              .then((response) => {
+                this.currentBrand = response.data;
+                console.log(response.data);
+                $("#editBrandModal").modal('show');
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        addBrand: function() {
+          this.loading = true;
+          this.$http.post(`/api/brand/`,this.newBrand)
+              .then((response) => {
+                this.loading = true;
+                this.getBrands();
+              })
+              .catch((err) => {
+                this.loading = true;
+                console.log(err);
+              })
+        },
+        updateBrand: function() {
+          this.loading = true;
+          this.$http.put(`/api/brand/${this.currentBrand.brand_id}/`, this.currentBrand)
+              .then((response) => {
+                this.loading = false;
+                this.currentBrand = response.data;
+                this.getBrands();
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        deleteBrand: function(id) {
+          this.loading = true;
+          this.$http.delete(`/api/brand/${id}/`)
+              .then((response) => {
+                this.loading = false;
+                this.getBrands();
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        }
+      }
+    });
+  </script>
+  </body>
+</html>

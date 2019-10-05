@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% load static %}
+{% include 'head.html' %}
+
+<body class="bg-light">
+    {% include 'topnavbar.html' %}
+    
+{% if user.is_superuser %}
+      
+
+         
+          <main role="main" class="container">
+              <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-success rounded shadow-rd">
+                  
+                  <div class="lh-100 mx-auto">
+                    <h4 class="mb-0 text-white lh-100">Admin Created Successfully</h4>
+                  </div>
+                </div>
+              
+                <div class="my-3 p-3 bg-white rounded shadow-rd ">
+                    <div class="d-flex align-items-center text-align-center">
+                            <a class="btn btn-light" href="{% url 'home' %}" role="button"><i class="fas fa-arrow-circle-left"></i> Back</a></h5>
+<h5>Go back to home page or log out and login as Admin user</h5>
+
+                            <a class="btn btn-light ml-auto" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i> Logout</a></h5>
+
+                    </div>
+
+
+                    </div>
+
+
+        {% endif %}

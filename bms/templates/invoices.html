@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>BMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  {% load static %}
+    
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  </head>
+
+  <body>
+      {% include 'topnavbar.html' %}
+      <div class="container-fluid">
+        <div class="row">
+
+          {% include 'sidenavbar.html' %}
+         
+          <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <div id="starting">
+              <div class="container">
+                  <ul class="nav nav-pills ">
+                      <h3>Stock Entry</h3>
+                  </ul>
+
+                  <form v-on:submit.prevent="addInvoice()">
+                      <div class="modal-body invoice-box ">
+                          
+                          <div class="row">
+                              <div class="col">
+                                  <label for="category_id">category ID</label>
+                                  <select v-model.number="newInvoice.category_id" name="newInvoice.category_id" class="form-control" @change="getBrands()">
+                                    <option v-for="categ in categories" :value="categ.category_id">${categ.category_name} </option>   
+                                  </select>
+                              </div>
+                              <div class="col">
+                                  <label for="brand_id">Brand ID</label>
+                            
+                                  <select v-model.number="newInvoice.brand_id" name="newInvoice.brand_id"
+                                    class="form-control" @change="getRates()">
+                                    <option  v-for="brand in brands" :value="brand.brand_id">${brand.brand_name}</option>
+                                  </select>
+                              </div>
+                          </div>
+
+                          <br>
+                          <div class="row">
+                            <div class="col">
+                                <label for="invoice_transaction_id">Invoice ID </label>
+                                <input
+                                  type="text"
+                                  name="newInvoice.invoice_transaction_id"
+                                  class="form-control"
+                                  id="invoice_transaction_id"
+                                  placeholder="Enter Invoice ID"
+                                  
+                                  required="required" >
+                            </div>  
+                            <div class="col">
+                                <label for="invoice_brand_size">Brand Size</label>
+                                <select name="newInvoice.invoice_brand_size" class="form-control" v-model="newInvoice.invoice_brand_size"
+                                  name="newInvoice.invoice_brand_size" >
+                                  <option v-for="bsize in brandsSize"  :value="bsize.quantity_name">
+                                    ${bsize.quantity_name} - ${bsize.quantity_bottles}
+                                  </option>
+                                </select>
+                                
+                              </div>
+                          
+                              <div class="col">
+                                <label for="invoice_brand_qty">Brand Qty</label>
+                                <input
+                                  type="text"
+                                  id="invoice_brand_qty"
+                                  class="form-control"
+                                  name="newInvoice.invoice_brand_qty"
+                                  placeholder="Brand Qty"
+                                  v-model="newInvoice.invoice_brand_qty"
+                                  required="required"
+                                  rows="3">
+                              </div>
+
+                              <div class="col">
+                                <label for="invoice_rate_per_case">Rate/case </label>
+                                
+                                <input
+                                  type="text"
+                                  id="invoice_rate_per_case"
+                                  class="form-control"
+                                  value="rate"
+                                  name="newInvoice.invoice_rate_per_case"
+                                  v-model="rate"
+                                  rows="3" > <span> ${ rate }</span>
+                              </div>
+                              <div class="col">
+                                <label for="invoice_no_of_bottles">No.of Bottles</label>
+                                <input
+                                  type="text"
+                                  id="invoice_no_of_bottles"
+                                  class="form-control"
+                                  placeholder="No.of Bottles"
+                                  name="newInvoice.invoice_no_of_bottles"
+
+                                  v-model="newInvoice.invoice_no_of_bottles"
+                                  required="required"
+                                  rows="3">
+                              </div>
+                              <div class="col">
+                                <label for="invoice_total">Total</label>
+                                <input
+                                  type="text"
+                                  id="invoice_total"
+                                  placeholder="Total"
+                                  class="form-control"
+                                  name="newInvoice.invoice_total"
+                                  v-model="newInvoice.invoice_total"
+                                  required="required"
+                                  rows="3">
+                              </div>
+                      
+                            </div>
+                        </div>
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+                
+              
+                <div class="row">
+                    <ul class="nav nav-pills ">
+                        <h3>Stock List <p>{{ shop.shop_id}}</p></h3>
+                        </ul>
+                  
+                  <table class="table">
+                    <thead>
+                        <tr>
+                          <th scope="col">Invoice ID</th>  <th scope="col">Brand ID</th>   <th scope="col">Brand Size</th>    <th scope="col">Brand Qty</th>    
+                          <th scope="col">Rate</th>  <th scope="col"># of Bottle </th>   <th scope="col">Total</th>  <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>                                  
+                      <tr v-for="invoice in invoices">
+                          <th scope="row">${invoice.invoice_transaction_id}</th>
+                          <td>${invoice.brand_id}</td>
+                          <td>${invoice.invoice_brand_size}</td>
+                          <td>${invoice.invoice_brand_qty}</td>
+                          <td>${invoice.invoice_rate_per_case}</td>
+                          <td>${invoice.invoice_no_of_bottles}</td>
+                          <td>${invoice.invoice_total}</td>
+
+                          <td>
+                            <button class="btn btn-info" v-on:click="getInvoice(invoice.invoice_transaction_id)">Edit</button>
+                            <button class="btn btn-danger" v-on:click="deleteInvoice(invoice.invoice_transaction_id)">Delete</button>
+                          </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                
+              
+                  <!-- Edit Invoice Modal -->
+                  <div class="modal fade" id="editInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">EDIT Invoice</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <form v-on:submit.prevent="updateInvoice()">
+                        <div class="modal-body">
+                            <div class="form-group">
+                              <label for="invoice_transaction_id">Invoice ID </label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                id="invoice_transaction_id"
+                                placeholder="Enter Invoice ID"
+                                v-model="currentInvoice.invoice_transaction_id"
+                                required="required" >
+                            </div>
+                            <div class="form-group">
+                              <label for="brand_id">Brand ID</label>
+                              <input
+                                type="text"
+                                id="brand_id"
+                                placeholder="Brand Id"
+                                v-model="currentInvoice.brand_id"
+                                required="required"
+                                rows="3">
+                            </div>
+                  <div class="form-group">
+                              <label for="invoice_brand_size">Brand Size</label>
+                              <input
+                                type="text"
+                                id="invoice_brand_size"
+                                placeholder="Brand Size"
+                                v-model="currentInvoice.invoice_brand_size"
+                                required="required"
+                                rows="3">
+                            </div>
+                            <div class="form-group">
+                              <label for="invoice_brand_qty">Brand Qty</label>
+                              <input
+                                type="text"
+                                id="invoice_brand_qty"
+                                placeholder="Brand Qty"
+                                v-model="currentInvoice.invoice_brand_qty"
+                                required="required"
+                                rows="3">
+                            </div>
+                            <div class="form-group">
+                              <label for="invoice_rate_per_case">Rate</label>
+                              <input
+                                type="text"
+                                id="invoice_rate_per_case"
+                                placeholder="Rate"
+                                v-model="currentInvoice.invoice_rate_per_case"
+                                required="required"
+                                rows="3">
+                            </div>
+                            <div class="form-group">
+                              <label for="invoice_no_of_bottles">No.of Bottles</label>
+                              <input
+                                type="text"
+                                id="invoice_no_of_bottles"
+                                placeholder="No.of Bottles"
+                                v-model="currentInvoice.invoice_no_of_bottles"
+                                required="required"
+                                rows="3">
+                            </div>
+                            <div class="form-group">
+                              <label for="invoice_total">Total</label>
+                              <input
+                                type="text"
+                                id="invoice_total"
+                                placeholder="Total"
+                                v-model="currentInvoice.invoice_total"
+                                required="required"
+                                rows="3">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                        </form>
+                      </div>
+                    </div>
+                    <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                  </div>
+                  <!-- End of edit invoice modal -->
+        
+                </div>
+              </div>
+              <div class="loading" v-if="loading===true">Loading&#8230;</div>                    
+              </div>
+          </main>
+                  </div>
+              </div>
+    
+
+  <!-- bootrtap js files -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+ <!-- Icons -->
+ <script src="{% static 'js/vendor/feather.min.js' %}"></script>
+  <script>
+    feather.replace()
+  </script>
+  <!-- vue.js files -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+  <script type="text/javascript">
+    Vue.http.headers.common['X-CSRFToken'] = "{{ csrf_token }}";
+    var myObject =  new Vue({
+      el: '#starting',
+      delimiters: ['${','}'],
+      data: {
+        invoices: [],
+        brands:[],
+        brandsSize:[],
+        categories:[],
+        loading: true,
+        rate: 00,
+        currentInvoice: {},
+        message: null,
+        newInvoice: { 'invoice_transaction_id': null, 'invoice_brand_size': null, 'invoice_rate_per_case':null },
+        search_term: '',
+      },
+      mounted: function() {
+        this.getInvoices();
+        this.getCategories();
+        this.getBrands();
+        this.getBrandsSize();
+        this.getRates();
+      },
+      computed: {
+        getRates: function(){
+          var x =this.newInvoice.brand_id;
+          var marvelHeroes = this.brands.filter(function(bd) {
+            if (bd.brand_id==x) {
+              console.log(bd.brand_q_cost);
+              return this.rate = bd.brand_q_cost;
+              
+           }
+            console.log(marvelHeroes);
+          } );
+      },
+    
+    
+    
+      },
+      methods: {
+        getInvoices: function() {
+          let api_url = '/api/invoice/';
+          if(this.search_term!==''||this.search_term!==null) {
+            api_url = `/api/invoice/?search=${this.search_term}`;
+          }
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.invoices = response.data;
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        getCategories: function() {
+          let api_url = '/api/category/';
+         this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.categories = response.data;
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+       
+        getBrands: function (){
+          let api_url = '/api/brand/';
+          api_url = `/api/brand/?search=${this.newInvoice.category_id}`;
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.brands = response.data;
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        getBrandsSize: function (){
+          let api_url = '/api/quantity/';
+          // api_url = `/api/brand/?search=${this.newInvoice.category_id}`;
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.brandsSize = response.data;
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        
+        getInvoice: function(id) {
+          this.loading = true;
+          this.$http.get(`/api/invoice/${id}/`)
+              .then((response) => {
+                this.currentInvoice = response.data;
+                console.log(response.data);
+                $("#editInvoiceModal").modal('show');
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        addInvoice: function() {
+          this.loading = true;
+          this.$http.post(`/api/invoice/`,this.newInvoice)
+              .then((response) => {
+                this.loading = true;
+                this.getInvoices();
+              })
+              .catch((err) => {
+                this.loading = true;
+                console.log(err);
+              })
+        },
+        updateInvoice: function() {
+          this.loading = true;
+          this.$http.put(`/api/invoice/${this.currentInvoice.invoice_transaction_id}/`, this.currentInvoice)
+              .then((response) => {
+                this.loading = false;
+                this.currentInvoice = response.data;
+                this.getInvoices();
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        deleteInvoice: function(id) {
+          this.loading = true;
+          this.$http.delete(`/api/invoice/${id}/`)
+              .then((response) => {
+                this.loading = false;
+                this.getInvoices();
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        }
+      },
+    });
+    const app = new Vue({
+  el: '#app',
+  delimiters: ['${','}'],
+  data: {
+    items: [
+     ]
+  },
+  computed: {
+    total() {
+      return this.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+    }
+  },
+  methods: {
+    addRow() {
+      this.items.push({ description: "", quantity: 1, price: 0 });
+    }
+  },
+  filters: {
+    currency(value) {
+      return value.toFixed(2);
+    }
+  }
+});
+  </script>
+  </body>
+</html>

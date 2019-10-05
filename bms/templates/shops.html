@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>BMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+
+
+  </head>
+
+  <body>
+      <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+          <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'home' %}">I Management System</a>
+          <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+              {% if user.is_authenticated %}
+              User: 
+              <span style="color:#fff;" id="grid" >{{ user.get_username }}</span>
+              <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}">Log out</a>
+              {% else %}
+              <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
+              {% endif %} 
+            </li>
+            
+          </ul> 
+      </nav>
+    
+    <ul>
+
+
+      <div class="container-fluid">
+          <div class="row">
+              <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                  <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                      <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'home' %}">
+                          <span data-feather="home"></span>
+                          Main <span class="sr-only">(current)</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'invoice' %}">
+                          <span data-feather="file"></span>
+                          Invoice
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'category' %}">
+                          <span data-feather="shopping-cart"></span>
+                          category
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">
+                          <span data-feather="users"></span>
+                          Manage User
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">
+                          <span data-feather="bar-chart-2"></span>
+                          Reports
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'invoice' %}">
+                          <span data-feather="layers"></span>
+                          Invoice
+                        </a>
+                      </li>
+                    </ul>
+        
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                      <span>Saved reports</span>
+                      
+                    </h6>
+                    <ul class="nav flex-column mb-2">
+                      <li class="nav-item">
+                        <a class="nav-link" href="">
+                          <span data-feather="file-text"></span>
+                          Stocks Categories
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="">
+                          <span data-feather="file-text"></span>
+                          Create Categories
+                        </a>
+                      </li>
+      
+                    </ul>
+                  </div>
+              </nav>
+              <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+                      {% block page_nav %}
+                          <ul class="nav nav-pills ">
+                            <h3>List of Shops</h3>
+                            </ul>{% endblock %}
+                      {% block content %}
+                      
+                      <div id="starting">
+                          <div class="container">
+                            <div class="row">
+                              <h1>
+                              <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addShopModal">New Shop</button>
+                              </h1>
+                              &emsp;
+                              <div class="form-inline my-2 my-lg-0" style="margin-left: 50%;">
+                                <input class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" aria-label="Search">
+
+                                <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getShops()">Search</button>
+                                 
+                              </div>
+
+                              <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Shop ID</th>
+                                    <th scope="col">Shop Name</th>
+                                    <th scope="col">Shop Owner</th>
+                                    <th scope="col">Shop Address</th>
+                                    <th scope="col">Shop Admin</th>
+
+                                    <th scope="col">Action</th>
+                                  </tr>
+                                </thead>
+
+
+
+                                <tbody>
+
+                          
+                                  <tr v-for="shop in shops">
+                                    <th scope="row">${shop.shop_id}</th>
+                                    <td><a href="{% url 'invoice' %}">${shop.shop_name}</a> </td>
+                                    <td>${shop.shop_owner}</td>
+                                    <td>${shop.shop_address}</td>
+                                    <td>${shop.shop_admin.username.username}</td>
+                                    <td>
+                                      <button class="btn btn-info" v-on:click="getShop(shop.shop_id)">Edit</button>
+                                      <button class="btn btn-danger" v-on:click="deleteShop(shop.shop_id)">Delete</button>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <!-- Add Shop Modal -->
+                              <div class="modal fade" id="addShopModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="exampleModalLongTitle">New Shop</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <form v-on:submit.prevent="addShop()">
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                          <label for="shop_name">Shop Name</label>
+                                          <input
+                                            type="text"
+                                            class="form-control"
+                                            id="shop_name"
+                                            placeholder="Enter Shop name"
+                                            v-model="newShop.shop_name"
+                                            required="required" >
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="shop_owner">Shop Owner</label>
+                                          <input
+                                            type="text"
+                                            class="form-control"
+                                            id="shop_owner"
+                                            placeholder="Enter Shop Owner"
+                                            v-model="newShop.shop_owner"
+                                            required="required"
+                                            rows="3">
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="shop_address">Shop Address</label>
+                                          <input
+                                            type="text"
+                                            class="form-control"
+                                            id="shop_address"
+                                            placeholder="Enter Shop Address"
+                                            v-model="newShop.shop_address"
+                                            required="required"
+                                            rows="3">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                                      <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                    </form>
+                                  </div>
+                                </div>
+                                <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                              </div>
+                              <!-- End of add shop modal -->
+                              <!-- Edit Shop Modal -->
+                              <div class="modal fade" id="editShopModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="exampleModalLongTitle">EDIT Shop</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <form v-on:submit.prevent="updateShop()">
+                                    <div class="modal-body">
+                                                <div class="form-group">
+                                          <label for="shop_name">Shop Heading</label>
+                                          <input
+                                            type="text"
+                                            class="form-control"
+                                            id="shop_name"
+                                            placeholder="Enter Shop Heading"
+                                            v-model="currentShop.shop_name"
+                                            required="required" >
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="shop_owner">Shop Desc</label>
+                                          <input
+                                            type="text"
+                                            class="form-control"
+                                            id="shop_owner"
+                                            placeholder="Enter Shop Desc"
+                                            v-model="currentShop.shop_owner"
+                                            required="required"
+                                            rows="3">
+                                        </div>
+                                <div class="form-group">
+                                          <label for="shop_address">Shop Address</label>
+                                          <input
+                                            type="text"
+                                            class="form-control"
+                                            id="shop_address"
+                                            placeholder="Enter Shop Address"
+                                            v-model="currentShop.shop_address"
+                                            required="required"
+                                            rows="3">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                                      <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                    </form>
+                                  </div>
+                                </div>
+                                <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                              </div>
+                              <!-- End of edit shop modal -->
+                    
+                            </div>
+                          </div>
+                          <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                    
+                        </div>
+                      {% endblock %}
+                  </main>
+
+
+
+
+            </div>
+      </div>
+    
+
+  <!-- bootrtap js files -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+ <!-- Icons -->
+ <script src="{% static 'js/vendor/feather.min.js' %}"></script>
+ <script>
+   feather.replace()
+ </script>
+  <!-- vue.js files -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+  <script type="text/javascript">
+    Vue.http.headers.common['X-CSRFToken'] = "{{ csrf_token }}";
+    new Vue({
+      el: '#starting',
+      delimiters: ['${','}'],
+      data: {
+        shops: [],
+        loading: true,
+        currentShop: {},
+        message: null,
+        newShop: { 'shop_name': null, 'shop_owner': null },
+        search_term: '',
+      },
+      mounted: function() {
+        this.getShops();
+      },
+      methods: {
+        getShops: function() {
+          let api_url = '/api/shop/';
+          if(this.search_term!==''||this.search_term!==null) {
+            api_url = `/api/shop/?search=${this.search_term}`;
+          }
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                shop_data= response.data;
+                this.shops = shop_data.filter(shop_data => shop_data.shop_admin.username.username.includes(document.getElementById("grid").innerHTML))
+                this.loading = false;
+                const products = response.data
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        getShop: function(id) {
+          this.loading = true;
+          this.$http.get(`/api/shop/${id}/`)
+              .then((response) => {
+                this.currentShop = response.data;
+                console.log(response.data);
+                $("#editShopModal").modal('show');
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        addShop: function() {
+          this.loading = true;
+          this.$http.post(`/api/shop/`,this.newShop)
+              .then((response) => {
+                this.loading = true;
+                this.getShops();
+              })
+              .catch((err) => {
+                this.loading = true;
+                console.log(err);
+              })
+        },
+        updateShop: function() {
+          this.loading = true;
+          this.$http.put(`/api/shop/${this.currentShop.shop_id}/`, this.currentShop)
+              .then((response) => {
+                this.loading = false;
+                this.currentShop = response.data;
+                this.getShops();
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        deleteShop: function(id) {
+          this.loading = true;
+          this.$http.delete(`/api/shop/${id}/`)
+              .then((response) => {
+                this.loading = false;
+                this.getShops();
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        }
+      }
+    });
+  </script>
+  </body>
+</html>

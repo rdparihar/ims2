@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+{% load static %}
+{% include 'head.html' %}
+
+<body class="bg-light">
+    {% include 'topnavbar.html' %}
+      {% if user.is_authenticated %}
+      
+      
+
+       
+          
+
+          <main role="main" class="container">
+              <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-rd">
+                <div class="lh-100">
+                  <h6 class="mb-0 text-white lh-100">Shops</h6>
+                  <small>List of Shops for you</small>
+                </div>
+              </div>
+            
+              <div class="my-3 p-3 bg-white rounded shadow-rd">
+                <h6 class="border-bottom border-gray pb-2 mb-0">
+                  {% if isAdmin or isSubAdmin or user.is_superuser %}
+                    
+                      <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addShopModal">
+                          <i class="fas fa-plus"></i> Add Shop</button>
+                   
+                  {% endif %}
+                </h6>
+                <div id="starting">
+                    
+                                  
+                      
+                      <div class="row table-responsive">
+                          {% if shop_list %}
+                        <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Shop Keeper</th>
+                                {% if isAdmin %}
+                                <th scope="col">Shop Admin</th>
+                                {% endif %}
+                                <th scope="col">Address</th>
+                                <th scope="col" colspan="3">Action</th>
+                              </tr>
+                            </thead>
+                            
+                            <tbody>
+                              {% for shop in shop_list %}
+                              <tr>
+                                <td class="link-row" data-href="{{ shop.shop_id }}">{{shop.shop_name}}</a> </td>
+
+                                <td class="link-row" data-href="{{ shop.shop_id }}">{{shop.shop_keeper}}</td>
+                                {% if isAdmin %}
+                                <td class="link-row" data-href="{{ shop.shop_id }}">{{shop.shop_admin.user_first_name}} {{shop.shop_admin.user_last_name}}</td>
+                                {% endif %}
+                                <td class="link-row" data-href="{{ shop.shop_id }}">{{shop.shop_address}}</td>
+                                <td>
+                                  <button class="btn btn-outline-primary" name="newShop.edit" value="{{shop.shop_id}}" v-on:click="getShop({{shop.shop_id}})">Edit</button>
+                                
+                                  <button class="btn btn-outline-danger" name="newShop.delete" value="{{shop.shop_id}}" v-on:click="deleteShop({{shop.shop_id}})">Delete</button>
+                                  
+            
+                                </td>
+                                {% endfor %}
+                              </tr>
+                            </tbody>
+                            {% else %}
+                            {% if isAdmin %}
+                                <div class="alert alert-info">
+                                    <h3> <strong>Admin  !</strong> Create a shop or go to Home page . </h3>
+                                </div>
+                               
+                              
+                            {% else %}
+                            <div class="alert alert-info ml-3">
+                                <h3> <strong></strong> There are no Shops.</h3>
+                            </div>
+                            
+                            {% endif %}
+            
+                                    {% endif %}  
+                        </table>
+                      
+                    
+                         <!-- Add Shop Modal -->
+                         <div class="modal fade" id="addShopModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLongTitle">New Shop</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form v-on:submit.prevent="addShop()">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                      <label for="shop_name">Shop Name</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="shop_name"
+                                        placeholder="Enter Shop name"
+                                        v-model="newShop.shop_name"
+                                        required="required" >
+                                    </div>
+                                    <!-- <div class="form-group">
+                                        <label for="shop_keeper"></label>
+                                        <label for="shop_keeper">Assign Shopkeeper</label>
+                                        <select v-model.number="newShop.shop_keeper" name="newBmsUser.shop_keeper" class="form-control" >
+                                          <option v-for="sk in shopkeeper" value="user.user_id">${user.user_first_name} ${user.user_last_name} - ( ${user.username.username} )</option>   
+                                        </select>
+                                      
+                                    </div> -->
+                                    <div class="form-group">
+                                        {% if isAdmin %}
+                                        <label for="shop_admin"></label>
+                                            <label for="shop_admin">Assign to Subadmins</label>
+                                            <select  v-model="newShop.shop_admin" name="newShop.shop_admin" class="form-control" >
+                                              <option v-for="user in subadmins" :value="user.user_id">${user.user_first_name} ${user.user_last_name} - ( ${user.username} )</option>   
+                                            </select>
+
+                                            <!-- <select v-model.number="newInvoice.category_id" 
+                                            name="newInvoice.category_id" 
+                                            class="form-control"
+                                            @change="getBrands()">
+                                                <option v-for="categ in categories" :value="categ.category_id">${categ.category_name} </option>   
+                                              </select> -->
+                                      
+                                        {% else %}
+                                        <!-- <input
+                                          type="text"
+                                          class="form-control"
+                                          id="shop_admin"
+                                          v-model="newShop.shop_admin"
+                                          :value.number="{{user}}"
+                                          name="newShop.shop_admin"
+                                          placeholder="{{user.id}}"
+                                          
+                                          
+                                          rows="3" > -->
+                                          {% endif %}
+                                      </div>
+                                    <div class="form-group">
+                                      <label for="shop_address">Shop Address</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="shop_address"
+                                        placeholder="Enter Shop Address"
+                                        v-model="newShop.shop_address"
+                                        required="required"
+                                        rows="3">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                                </form>
+                              </div>
+                            </div>
+                            <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                          </div>
+                          <!-- End of add shop modal -->
+                          <!-- Edit Shop Modal -->
+                          <div class="modal fade" id="editShopModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLongTitle">Update Shop</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form v-on:submit.prevent="updateShop()">
+                                    <div class="modal-body">
+                                                <div class="form-group">
+                                          <label for="shop_name">Shop Name</label>
+                                          <input
+                                            type="text"
+                                            class="form-control"
+                                            id="shop_name"
+                                            placeholder="Enter New Shop Name"
+                                            v-model="currentShop.shop_name"
+                                            required="required" >
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="shop_keeper">Shop keeper</label>
+                                          <input
+                                            type="text"
+                                            class="form-control"
+                                            id="shop_keeper"
+                                            placeholder="Enter Shop keeper"
+                                            v-model="currentShop.shop_keeper"
+                                            required="required"
+                                            rows="3">
+                                        </div>
+                                        <div class="form-group">
+                                            <input
+                                              type="hidden"
+                                              class="form-control"
+                                              id="shop_admin"
+                                             id="shop_admin"
+                                              :value="{{user.id}}"
+                                              name="currentShop.shop_admin"
+                                              placeholder="{{user}}"
+                                              required="required"
+                                              rows="3">
+                                          </div>
+                                <div class="form-group">
+                                          <label for="shop_address">Shop Address</label>
+                                          <input
+                                            type="text"
+                                            class="form-control"
+                                            id="shop_address"
+                                            placeholder="Enter Shop Address"
+                                            v-model="currentShop.shop_address"
+                                            required="required"
+                                            rows="3">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                                      <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                    </form>
+                              </div>
+                            </div>
+                            <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                          </div>
+                          <!-- End of edit shop modal -->
+              
+                      </div>
+                  </div>
+              </div>
+            
+              
+            </main>
+
+  
+      
+      
+  
+         
+{% endif %}
+
+<!-- bootrtap js files -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- Icons -->
+<script src="{% static 'js/vendor/feather.min.js' %}"></script>
+<script>
+feather.replace()
+</script>
+
+<script>
+    jQuery(document).ready(function($){
+      $(".link-row").click(function(){
+        window.location = $(this).data("href");
+      })
+    })
+    </script>
+<!-- vue.js files -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+{% if user.is_authenticated %}
+<script type="text/javascript">
+  Vue.http.headers.common['X-CSRFToken'] = "{{ csrf_token }}";
+  new Vue({
+    el: '#starting',
+    delimiters: ['${','}'],
+    data: {
+      shops: [],
+      subadmins:[],
+      shopkeeper:[],
+      loading: true,
+      currentShop: {},
+      message: null,
+      newShop: { 'shop_name': null, 'shop_owner': null, 'shop_admin': null },
+      search_term: '',
+    },
+    mounted: function() {
+      this.getShops();
+      this.getBmsUsers();
+    },
+    methods: {
+      getBmsUsers: function() {
+        let api_url = '/api/bmsuser/';
+        this.loading = true;
+        this.$http.get(api_url)
+            .then((response) => {
+              
+              
+
+              let sub= response.data;
+                let obj = sub.filter(u => u.user_role == "S");
+                let sk = sub.filter(u => u.user_role == "U" );
+                this.shopkeeper = sk;
+                console.log(obj);
+                this.subadmins = obj;
+
+              this.loading = false;
+            })
+            .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            })
+      },
+      getShops: function() {
+        let api_url = '/api/shop/';
+        if(this.search_term!==''||this.search_term!==null) {
+          api_url = `/api/shop/?search=${this.search_term}`;
+        }
+        this.loading = true;
+        this.$http.get(api_url)
+            .then((response) => {
+              this.shops = response.data;
+              this.loading = false;
+            })
+            .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            })
+      },
+
+      getShop: function(id) {
+        this.loading = true;
+        console.log(this.newShop.edit);
+        this.$http.get(`/api/shop/${id}/`)
+            .then((response) => {
+              this.currentShop = response.data;
+              console.log(response.data);
+              $("#editShopModal").modal('show');
+              this.loading = false;
+            })
+            .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            })
+      },
+      addShop: function() {
+        this.loading = true;
+        let is_admin = "{{ isAdmin }}";
+        if (is_admin == "False"){
+          this.newShop.shop_admin = {{user.id}}
+
+        }
+        console.log("{{ isAdmin }}");
+        console.log(this.newShop.shop_admin);
+        console.log(this.newShop.shop_name);
+        // this.newShop['shop_admin'] = {{user.id}};
+
+        
+        this.$http.post(`/api/shop/`,this.newShop)
+            .then((response) => {
+              this.loading = true;
+              location.reload();
+              this.getShops();
+
+            })
+            .catch((err) => {
+              this.loading = true;
+              console.log(err);
+            })
+      },
+      updateShop: function() {
+        this.loading = true;
+        this.currentShop['shop_admin'] = {{user.id}};
+        this.$http.put(`/api/shop/${this.currentShop.shop_id}/`, this.currentShop)
+            .then((response) => {
+              this.loading = false;
+              this.currentShop = response.data;
+              this.getShops();
+            })
+            .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            })
+      },
+      deleteShop: function(id) {
+        var conf = confirm("Are you sure");
+        if (conf){
+        this.loading = true;
+        this.$http.delete(`/api/shop/${id}/`)
+            .then((response) => {
+              alert("Deleted");
+              this.loading = false;
+              location.reload();
+              this.getShops();
+            })
+            .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            })
+          }
+      }
+    }
+  });
+</script>
+
+{% endif %}
+
+</body>
+</html>
