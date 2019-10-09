@@ -32,7 +32,7 @@
                     
                                   
                       
-                      <div class="row table-responsive">
+                      <div class="row table-responsive mx-2">
                           {% if shop_list %}
                         <table class="table table-hover">
                             <thead>
@@ -166,6 +166,28 @@
                             <div class="loading" v-if="loading===true">Loading&#8230;</div>
                           </div>
                           <!-- End of add shop modal -->
+
+                          <div class="modal fade" id="ErrorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLongTitle">Sub-Admin does not exist</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="model-body">
+                                  <div class="alert alert-secondary">
+                                    Please create sub-admin first
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <a href="{% url 'home' %}" class="btn btn-light" role="button">Create Sub-Admin</a>
+
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                           <!-- Edit Shop Modal -->
                           <div class="modal fade" id="editShopModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -303,6 +325,11 @@ feather.replace()
                 let sk = sub.filter(u => u.user_role == "U" );
                 this.shopkeeper = sk;
                 console.log(obj);
+                console.log(typeof obj);
+                if (Object.keys(obj).length === 0){
+                  $("#ErrorModal").modal('show');
+                  console.log("none")
+                }
                 this.subadmins = obj;
 
               this.loading = false;

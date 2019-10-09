@@ -67,7 +67,7 @@
                                 <th scope="row"></th>
                                 <td>${brand.brand_name}</td>
                                 <td>${brand.category_id.category_name}</td>
-                                <td>${brand.brand_code}</td>
+                                <td>${brand.brand_id}</td>
                                 <!-- <td>${brand.brand_p_cost}</td>
                                 <td>${brand.brand_q_cost}</td>
                                 <td>${brand.brand_n_cost}</td>
@@ -109,20 +109,7 @@
                               <form v-on:submit.prevent="addBrand()">
                               <div class="modal-body">
                                 <div class="row">
-                                  <div class="col">
-                                      <div class="form-group">
-                                          <label for="brand_code">Brand Code</label>
-                                          
-                                          <input
-                                            type="text"
-                                            class="form-control"
-                                            id="brand_code"
-                                            placeholder="Code"
-                                            v-model="newBrand.brand_code"
-                                            required="required" >
-                                        </div>
-
-                                  </div>
+                                 
                                   <div class="col">
                                       <div class="form-group">
                                           <label for="brand_name">Brand Name</label>

@@ -51,7 +51,7 @@
                             </button>
                           </div>
                  
-                  <div class=" " v-for="(invoice_product, k) in invoice_products" :key="k">
+                  <div class=" " v-for="(invoice_product, index) in invoice_products" :key="index">
 
                       <form v-on:submit.prevent="addInvoice()">
                           <div class="row ">
@@ -69,12 +69,12 @@
                                   </select>
                               </div>
                               <div class="col ">
-                                  <label for="brand_code">Brand Code</label>
+                                  <label for="brand_id">Brand Code</label>
                                   <input
                                   type="text"
-                                  id="brand_code"
+                                  id="brand_id"
                                   class="form-control"
-                                  v-model.number="newInvoice.brand_code" 
+                                  v-model.number="newInvoice.brand_id" 
                                   name="newInvoice.brand_id"
                                   placeholder="Enter Brand Code"
                                   required="required"
@@ -87,17 +87,7 @@
 
                       <div class="row form-inline ">
 
-                              <!-- <div class="col">
-                                <label for="invoice_transaction_id">Invoice ID </label>
-                                <input
-                                  type="text"
-                                  name="newInvoice.invoice_transaction_id"
-                                  class="form-control"
-                                  id="invoice_transaction_id"
-                                  placeholder="Enter Invoice ID"
-                                  
-                                  required="required" >
-                                </div>   -->
+                              
                                
                                 <div class="col">
                                     <label for="invoice_brand_size">Brand Size</label>
@@ -132,7 +122,7 @@
                                     value="rate"
                                     name="newInvoice.invoice_rate_per_case"
                                     v-model="newInvoice.invoice_rate_per_case"
-                                    rows="3" >
+                                    rows="3" readonly>
                                 </div>
                                 <div class="col">
                                     <label for="invoice_no_of_cases">Cases</label>
@@ -145,7 +135,7 @@
 
                                     v-model="newInvoice.invoice_no_of_cases"
                                     required="required"
-                                    rows="3">
+                                    rows="3" readonly>
                                 </div>
                                 <div class="col">
                                     <label for="invoice_total">Total</label>
@@ -157,7 +147,7 @@
                                     name="newInvoice.invoice_total"
                                     v-model="newInvoice.invoice_total"
                                     required="required"
-                                    rows="3">
+                                    rows="3" readonly>
                                 </div>
                             </div>
                             
@@ -167,23 +157,24 @@
                             </div>
                         </form>
                   </div>
-                    <button type='button' class="btn btn-light" @click="addNewRow">
+                    <!-- <button type='button' class="btn btn-light disabled" @click="addNewRow">
                         <i class="fas fa-plus"></i>
                         Add
-                    </button>
+                    </button> -->
                     </div>
                     <div class="my-3 p-3 bg-white rounded shadow-rd">
                         <div class="table-responsive">
                     <table class="table table-hover">
                       <thead>
                           <tr>
-                            <th scope="col">Invoice ID</th>  <th scope="col">Brand ID</th>   <th scope="col">Date</th> <th scope="col">Brand Size</th>    <th scope="col">Brand Qty</th>    
+                            <!-- <th scope="col">Invoice ID</th>   -->
+                            <th scope="col">Brand Code</th>   <th scope="col">Date</th> <th scope="col">Brand Size</th>    <th scope="col">Brand Qty</th>    
                             <th scope="col">Rate</th>  <th scope="col"># of Bottle </th>   <th scope="col">Total</th>  <th scope="col">Action</th>
                           </tr>
                       </thead>
                       <tbody>                                  
                         <tr v-for="invoice in invoices">
-                            <th scope="row">${invoice.invoice_transaction_id}</th>
+                            <!-- <th scope="row">${invoice.invoice_transaction_id}</th> -->
                             <td>${invoice.brand_id}</td>
                             <td>${invoice.invoice_date}</td>
                             <td>${invoice.invoice_brand_size}</td>
@@ -269,12 +260,12 @@
                                           </select>
                                       </div>
                                       <div class="col ">
-                                          <label for="brand_code">Brand Code</label>
+                                          <label for="brand_id">Brand Code</label>
                                           <input
                                           type="text"
-                                          id="brand_code"
+                                          id="brand_id"
                                           class="form-control"
-                                          v-model.number="newShift.brand_code" 
+                                          v-model.number="newShift.brand_id" 
                                           name="newShift.brand_id"
                                           placeholder="Enter Brand Code"
                                           required="required"
@@ -442,6 +433,8 @@
                       </div>
 
                     </div>
+
+                    
                        
                                         
                     
@@ -495,17 +488,17 @@
                                     </div>
                                     <div class="">
                                         <div class="col">
-                                            <label for="invoice_brand_code">Brand Code</label>
+                                            <label for="invoice_brand_id">Brand Code</label>
                                             <input
                                             type="text"
-                                            id="brand_code"
+                                            id="brand_id"
                                             class="form-control"
-                                            v-model.number="newInvoice.brand_code" 
-                                            name="newInvoice.brand_code"
+                                            v-model.number="newClosing.brand_id" 
+                                            name="newClosing.brand_id"
                                             placeholder="Enter Brand Code"
                                             required="required"
                                             value=""
-                                            rows="3" @change="getRatesb()">
+                                            rows="3" @change="getShiftData()">
                                         </div>
                                     </div>
 
@@ -518,12 +511,6 @@
                                 <hr>
                                 
                                 <div class="row">
-                                   
-
-                                 
-
-                                 
-
                                       <div class="table-responsive">
                                           <table class="table table-hover">
                                               <thead>
@@ -539,12 +526,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-
-                                                   
-                                                    
-
-
-                                                    <tr>
+                                                 <tr>
                                                       <th scope="row"> P  - ${ brandsSize.P  }</th>
                                                       <td>${ op_stk_data.open_p }</td>
                                                       <td>${ in_stk_data.P}</td>
@@ -575,25 +557,88 @@
                                                           <td> ${ sold_q}</td>
                                                           <td> ${ total_q}</td>
                                                       </tr>
-                                                      <tr>
-                                                          
+                                                      <tr>                                                          
                                                           <th scope="row"> N  - ${ brandsSize.N  }</th>
-                                                          <td>${ op_stk_data.open_q }</td>
-                                                         <td>${ in_stk_data.N}</td>
-                                                          
-                                                        <td>${ shift_given.stock_shift_n }</td>
-                                                        <td>${ shift_taken.stock_shift_n} </td>
-
-                                                        <td><input
-                                                          type="number"
-                                                          name="newClosing.close_qty_n"
-                                                          class="form-control"
-                                                          id="close_qty_n"
-                                                          placeholder="Enter Closing Qty"
-                                                          v-model="newClosing.close_qty_n"
-                                                          ></td>            
+                                                          <td>${ op_stk_data.open_n }</td>
+                                                          <td>${ in_stk_data.N}</td>
+                                                          <td>${ shift_given.stock_shift_n }</td>
+                                                          <td>${ shift_taken.stock_shift_n} </td>
+                                                          <td>
+                                                            <input type="number" 
+                                                            name="newClosing.close_qty_n" class="form-control"
+                                                            id="close_qty_n" placeholder="Enter Closing Qty"
+                                                            v-model="newClosing.close_qty_n" >
+                                                          </td>            
                                                           <td> ${ sold_n}</td>
                                                           <td> ${ total_n}</td>
+              
+                                                      </tr>
+
+                                                      <tr>                                                          
+                                                          <th scope="row"> XG  - ${ brandsSize.XG  }</th>
+                                                          <td>${ op_stk_data.open_xg }</td>
+                                                          <td>${ in_stk_data.XG}</td>
+                                                          <td>${ shift_given.stock_shift_xg }</td>
+                                                          <td>${ shift_taken.stock_shift_xg} </td>
+                                                          <td>
+                                                            <input type="number" 
+                                                            name="newClosing.close_qty_xg" class="form-control"
+                                                            id="close_qty_xg" placeholder="Enter Closing Qty"
+                                                            v-model="newClosing.close_qty_xg" >
+                                                          </td>            
+                                                          <td> ${ sold_xg}</td>
+                                                          <td> ${ total_xg}</td>
+              
+                                                      </tr>
+
+                                                      <tr>                                                          
+                                                          <th scope="row"> L  - ${ brandsSize.L  }</th>
+                                                          <td>${ op_stk_data.open_l }</td>
+                                                          <td>${ in_stk_data.L}</td>
+                                                          <td>${ shift_given.stock_shift_l }</td>
+                                                          <td>${ shift_taken.stock_shift_l} </td>
+                                                          <td>
+                                                            <input type="number" 
+                                                            name="newClosing.close_qty_l" class="form-control"
+                                                            id="close_qty_l" placeholder="Enter Closing Qty"
+                                                            v-model="newClosing.close_qty_l" >
+                                                          </td>            
+                                                          <td> ${ sold_l}</td>
+                                                          <td> ${ total_l}</td>
+              
+                                                      </tr>
+
+                                                      <tr>                                                          
+                                                          <th scope="row"> D  - ${ brandsSize.D  }</th>
+                                                          <td>${ op_stk_data.open_d }</td>
+                                                          <td>${ in_stk_data.D}</td>
+                                                          <td>${ shift_given.stock_shift_d }</td>
+                                                          <td>${ shift_taken.stock_shift_d} </td>
+                                                          <td>
+                                                            <input type="number" 
+                                                            name="newClosing.close_qty_d" class="form-control"
+                                                            id="close_qty_d" placeholder="Enter Closing Qty"
+                                                            v-model="newClosing.close_qty_d" >
+                                                          </td>            
+                                                          <td> ${ sold_d}</td>
+                                                          <td> ${ total_d}</td>
+              
+                                                      </tr>
+
+                                                      <tr>                                                          
+                                                          <th scope="row"> Y  - ${ brandsSize.Y  }</th>
+                                                          <td>${ op_stk_data.open_y}</td>
+                                                          <td>${ in_stk_data.Y}</td>
+                                                          <td>${ shift_given.stock_shift_y }</td>
+                                                          <td>${ shift_taken.stock_shift_y} </td>
+                                                          <td>
+                                                            <input type="number" 
+                                                            name="newClosing.close_qty_y" class="form-control"
+                                                            id="close_qty_y" placeholder="Enter Closing Qty"
+                                                            v-model="newClosing.close_qty_y" >
+                                                          </td>            
+                                                          <td> ${ sold_y}</td>
+                                                          <td> ${ total_y}</td>
               
                                                       </tr>
     
@@ -605,10 +650,14 @@
                                           </table>
                                 </div>
                                 </div>
+                                 
+
+                                    <div class="modal-footer">
+                              
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                
                             
-                            <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </div>
                             </form>
                         </div>
                     <br>
@@ -653,13 +702,14 @@
         rate: 00,
         currentInvoice: {},
         message: null,
+        rows: [],
         newInvoice:{   
             "shop_id": null,
             "brand_id": null,
             "category_id": null,
             "invoice_brand_size": null,
             "invoice_brand_qty": null,
-            "invoice_rate_per_case": null,
+            "invoice_rate_per_case": null, "invoice_rate_per_case_P": null, "invoice_rate_per_case_N": null,
             "invoice_no_of_cases": null,
             "invoice_total": 0
 
@@ -680,8 +730,26 @@
         this.getBrandsSize();
         // this.getRates();
       },
+      computed: {
+    total() {
+      return this.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+    }
+  },
 
       methods: {
+        addNewRow: function(count){
+       var numRows = this.rows.length;
+      
+       if (numRows >= 10) return;
+       
+       for(var i=1; i <= count; i++){
+       	 this.rows.push({});
+         if(++numRows == 10) break;
+        }
+      },
         addNewRow() {
             this.invoice_products.push({
                 product_no: '',
@@ -695,8 +763,11 @@
           var local = new Date();
             dt = local.toJSON().slice(0,10);
 
+          let shop_id = {{shop.shop_id}} ;
           let api_url = '/api/invoice/';
           api_url = `/api/invoice/?format=json&invoice_date=${dt}`
+          api_url = `/api/invoice/?shop_id=${shop_id}&invoice_date=${dt}`
+
                   console.log(api_url);
     
           this.loading = true;
@@ -718,6 +789,7 @@
           this.$http.get(api_url)
               .then((response) => {
                 this.categories = response.data;
+                console.log("ies", this.categories);
                 this.loading = false;
               })
               .catch((err) => {
@@ -725,6 +797,70 @@
                 console.log(err);
               })
         },
+        getCategory: function(id) {
+          let api_url = '/api/category/';
+          api_url = `/api/category/${id}`;
+
+         this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.categories = response.data;
+                // console.clear()
+                var a=[];
+                a.push(this.categories);
+                this.categories = a;
+                console.log("Category: ", a);
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        getRatea: function(Q){
+          let api_url = '/api/brand/';
+          api_url = `/api/brand/${this.newInvoice.brand_id}`;
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                let status = response.status;
+                console.log(status);
+                
+                let shop_data= response.data;
+                this.serverError= false;
+                console.log("data",shop_data)
+                if (Q == "Q") this.newInvoice.invoice_rate_per_case = shop_data.brand_q_cost;
+                if (Q == "P") this.newInvoice.invoice_rate_per_case = shop_data.brand_p_cost;
+                if (Q == "N") this.newInvoice.invoice_rate_per_case = shop_data.brand_n_cost;
+                if (Q == "XG") this.newInvoice.invoice_rate_per_case = shop_data.brand_xg_cost;
+                if (Q == "L") this.newInvoice.invoice_rate_per_case = shop_data.brand_l_cost;
+                if (Q == "D") this.newInvoice.invoice_rate_per_case = shop_data.brand_d_cost;
+                if (Q == "Y") this.newInvoice.invoice_rate_per_case = shop_data.brand_y_cost;
+               // alert(JSON.stringify(shop_data));
+
+              
+                this.loading = false;
+                
+              }, function(err) {
+                if (err.status == 404) {
+                  this.loading = false;
+                  console.log(err);
+                  this.serverError= true;
+                  this.msg = err.status+ " - " +err.statusText+ ", Select the Brand or Enter Brand code first";
+                }
+              }
+              
+              
+              )
+              .catch((err) => {
+                this.loading = false;
+                
+                console.log(err);
+              })
+        },
+          
+
+        
         calBottle: function() {
             console.log(this.newInvoice.invoice_brand_size);
             let api_url = '/api/quantity/';
@@ -735,7 +871,10 @@
                     
                     this.loading = false;
                     let qty_data= response.data;
+                    //bottle in brand size
                     let qty_btl = qty_data.find(u => u.quantity_name === this.newInvoice.invoice_brand_size);
+                    this.getRatea(qty_btl.quantity_name);                   
+                
                     this.newInvoice.invoice_brand_qty *  qty_btl.quantity_bottles;
                     this.newInvoice.invoice_no_of_cases = this.newInvoice.invoice_brand_qty *  qty_btl.quantity_bottles;
                     this.newInvoice.invoice_total = this.newInvoice.invoice_no_of_cases * this.newInvoice.invoice_rate_per_case;
@@ -764,7 +903,7 @@
         },
         getRatesb: function (){
           let api_url = '/api/brand/';
-          api_url = `/api/brand/${this.newInvoice.brand_code}`;
+          api_url = `/api/brand/${this.newInvoice.brand_id}`;
           this.loading = true;
           this.$http.get(api_url)
               .then((response) => {
@@ -774,10 +913,9 @@
                 
                 let shop_data= response.data;
                 this.serverError= false;
-                console.log(shop_data)
-                //let obj = shop_data.find(u => u.brand_id === this.newInvoice.brand_id);
-                this.newInvoice.invoice_rate_per_case = shop_data.brand_q_cost;
-                console.log("q cost: " +shop_data.brand_q_cost);
+                console.log("data",shop_data)
+                this.getCategory(shop_data.category_id.category_id);
+            
                // alert(JSON.stringify(shop_data));
 
               
@@ -806,7 +944,6 @@
           this.loading = true;
           this.$http.get(api_url)
               .then((response) => {
-                this.brands = response.data;
                 
                 let shop_data= response.data;
                 console.log(shop_data)
@@ -861,7 +998,8 @@
         addInvoice: function() {
             var local = new Date();
             dt = local.toJSON().slice(0,10);
-            let sid = {{shop.shop_id}}
+            let sid = {{shop.shop_id}} ;
+            // this.newInvoice['brand_id'] = this.newInvoice.brand_id;
             this.newInvoice['shop_id'] = sid ;
 
             this.newInvoice['invoice_date'] = dt;
@@ -964,6 +1102,25 @@ var myStockShift =  new Vue({
                 console.log(err);
               })
         },
+        getShiftData: function (){
+          let api_url = '/api/brand/';
+          api_url = `/api/brand/?search=${this.newShift.category_id}`;
+          // GET /api/shift/?brand_id=1&stock_shift_date=&stock_shift_from=&stock_shift_to=
+
+          // api_url = `/api/shift/?stock_shift_from=${this.newShift.brand_id}`;
+
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.brands = response.data;
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+
             getShops: function() {
               let api_url = '/api/shop/';
               this.loading = true;
@@ -1009,13 +1166,15 @@ var myStockShift =  new Vue({
         brands:[],
         shops:[],
         shifts:[],
-        shift_given:{"stock_shift_p": 0, "stock_shift_q": 0, "stock_shift_n": 0,  },
-        shift_taken:{"stock_shift_p": 0, "stock_shift_q": 0, "stock_shift_n": 0, },
+        shift_given:{ "stock_shift_p": 0, "stock_shift_q": 0, "stock_shift_n": 0, "stock_shift_d": 0, "stock_shift_l": 0, "stock_shift_xg": 0, "stock_shift_y": 0
+ },
+        shift_taken:{ "stock_shift_p": 0, "stock_shift_q": 0, "stock_shift_n": 0, "stock_shift_d": 0, "stock_shift_l": 0, "stock_shift_xg": 0, "stock_shift_y": 0
+ },
        
         brandsSize:[],
         categories:[],
-        op_stk_data:{"open_p": 0, "open_q": 0, "open_n": 0},
-        in_stk_data:{"P": 0, "Q": 0, "N": 0, "L": 0, "Y": 0, "XG": 0 , },
+        op_stk_data:{"open_p": 0, "open_q": 0, "open_n": 0, 'open_l': 0, 'open_y': 0, 'open_xg': 0, 'open_d': 0 },
+        in_stk_data:{"P": 0, "Q": 0, "N": 0, "L": 0, "Y": 0, "XG": 0 , "D": 0,},
         brnd_details: { "brand_p_sale": 0, "brand_q_sale": 0, "brand_n_sale": 0, "brand_d_sale": 0, "brand_l_sale": 0, "brand_xg_sale": 0, "brand_y_sale": 0 },
         invoices:[],
         loading: true,
@@ -1041,6 +1200,7 @@ var myStockShift =  new Vue({
           this.getBrands();
           this.getShops();
           this.getBrandsSize();
+          // this.getInvoicesd();
           // this.getShiftData();
           // this.getOpenData();
       },
@@ -1049,19 +1209,48 @@ var myStockShift =  new Vue({
           return (parseInt(this.op_stk_data.open_p) + parseInt(this.in_stk_data.P)  + parseInt(this.shift_taken.stock_shift_p) - parseInt(this.shift_given.stock_shift_p) - parseInt(this.newClosing.close_qty_p)) || 0;
         },
         total_p() {
-          return (parseInt(this.sold_p) * parseInt(this.brnd_details.brand_p_sale)) || 0;
+          return (parseInt(this.sold_p) * parseInt(this.brnd_details.brand_p_cost)) || 0;
         },
         sold_q() {
           return (parseInt(this.op_stk_data.open_q) + parseInt(this.in_stk_data.Q)  + parseInt(this.shift_taken.stock_shift_q) - parseInt(this.shift_given.stock_shift_q) - parseInt(this.newClosing.close_qty_q)) || 0;
         },
         total_q() {
-          return (parseInt(this.sold_q) * parseInt(this.brnd_details.brand_q_sale)) || 0;
+          console.log("Q",this.brnd_details.brand_q_cost);
+          return (parseInt(this.sold_q) * parseInt(this.brnd_details.brand_q_cost)) || 0 ;
         },
         sold_n() {
           return (parseInt(this.op_stk_data.open_n) + parseInt(this.in_stk_data.N)  + parseInt(this.shift_taken.stock_shift_n) - parseInt(this.shift_given.stock_shift_n) - parseInt(this.newClosing.close_qty_n)) || 0;
         },
         total_n() {
-          return (parseInt(this.sold_n) * parseInt(this.brnd_details.brand_n_sale)) || 0;
+          return (parseInt(this.sold_n) * parseInt(this.brnd_details.brand_n_cost)) || 0;
+        },
+        
+        sold_l() {
+          return (parseInt(this.op_stk_data.open_l) + parseInt(this.in_stk_data.L)  + parseInt(this.shift_taken.stock_shift_l) - parseInt(this.shift_given.stock_shift_l) - parseInt(this.newClosing.close_qty_l)) || 0;
+        },
+        total_l() {
+          return (parseInt(this.sold_l) * parseInt(this.brnd_details.brand_l_cost)) || 0;
+        },
+        
+        sold_d() {
+          return (parseInt(this.op_stk_data.open_d) + parseInt(this.in_stk_data.D)  + parseInt(this.shift_taken.stock_shift_d) - parseInt(this.shift_given.stock_shift_d) - parseInt(this.newClosing.close_qty_d)) || 0;
+        },
+        total_d() {
+          return (parseInt(this.sold_d) * parseInt(this.brnd_details.brand_d_cost)) || 0;
+        },
+        
+        sold_xg() {
+          return (parseInt(this.op_stk_data.open_xg) + parseInt(this.in_stk_data.XG)  + parseInt(this.shift_taken.stock_shift_xg) - parseInt(this.shift_given.stock_shift_xg) - parseInt(this.newClosing.close_qty_xg)) || 0;
+        },
+        total_xg() {
+          return (parseInt(this.sold_xg) * parseInt(this.brnd_details.brand_xg_cost)) || 0;
+        },
+        
+        sold_y() {
+          return (parseInt(this.op_stk_data.open_y) + parseInt(this.in_stk_data.Y)  + parseInt(this.shift_taken.stock_shift_y) - parseInt(this.shift_given.stock_shift_y) - parseInt(this.newClosing.close_qty_y)) || 0;
+        },
+        total_y() {
+          return (parseInt(this.sold_y) * parseInt(this.brnd_details.brand_y_cost)) || 0;
         },
       
     },
@@ -1195,10 +1384,11 @@ var myStockShift =  new Vue({
 
 
         },
-        getInvoicesd: function()
-        {
+    
+        getInvoicesd: function () {
           var local = new Date();
           dt = local.toJSON().slice(0,10);
+          let shop_id = {{shop.shop_id}} ;
           console.log(dt)
           let api_url = `/api/invoice/?shop_id=${shop_id}&invoice_date=${this.newClosing.close_date}&brand_id=${this.newClosing.brand_id}`
           this.loading = true;
@@ -1251,14 +1441,15 @@ var myStockShift =  new Vue({
         getShiftData: function ()
         {
           let api_url = '/api/shift/';
-          api_url = `/api/shift/?search=${this.newClosing.brand_id}`;
+          // api_url = `/api/shift/?search=${this.newClosing.brand_id}`;
+          api_url = `/api/shift/?brand_id=${this.newClosing.brand_id}`;
           this.loading = true;
           this.$http.get(api_url)
           .then((response) => {
             console.log("Shift:", api_url);
             let sft_data= response.data;
             let sft_gvn = sft_data.find(u => (new Date (Date.parse(u.stock_shift_date))).toISOString().slice(0,10) === this.newClosing.close_date &&	u.stock_shift_from === {{shop.shop_id}}) ;
-            let sft_tkn = sft_data.find(u => (new Date (Date.parse(u.stock_shift_date))).toISOString().slice(0,10) === this.newClosing.close_date &&	u.stock_shift_to === {{shop.shop_id}}) || 0;
+            let sft_tkn = sft_data.find(u => (new Date (Date.parse(u.stock_shift_date))).toISOString().slice(0,10) === this.newClosing.close_date &&	u.stock_shift_to === {{shop.shop_id}}) ;
             if (sft_gvn)
             {
               this.shift_given = sft_gvn;
@@ -1276,7 +1467,7 @@ var myStockShift =  new Vue({
               console.log(err);
             })
         },
-
+// this function is for the total to function
         getBrandDetail: function()
         {
           let api_url = '/api/open/';
@@ -1285,7 +1476,7 @@ var myStockShift =  new Vue({
           this.$http.get(api_url)
           .then((response) => {
             let brnd_data = response.data;
-            console.log(brnd_data);
+            console.log("brand data", brnd_data);
             if (brnd_data.length > 0){
               this.brnd_details = brnd_data[0];
             }

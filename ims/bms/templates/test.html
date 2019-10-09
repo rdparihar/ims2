@@ -39,100 +39,181 @@
 </head>
 <body class="bg-light">
     {% include 'topnavbar.html' %}
+
+<br>
     
-    <div class="nav-scroller bg-white shadow-sm">
-      <nav class="nav nav-underline">
-        <a class="nav-link active" href="#">Dashboard</a>
-        <a class="nav-link" href="#">
-          Friends
-          <span class="badge badge-pill bg-light align-text-bottom">27</span>
-        </a>
-        <a class="nav-link" href="#">Explore</a>
-        <a class="nav-link" href="#">Suggestions</a>
-        <a class="nav-link" href="#">Link</a>
-        <a class="nav-link" href="#">Link</a>
-        <a class="nav-link" href="#">Link</a>
-        <a class="nav-link" href="#">Link</a>
-        <a class="nav-link" href="#">Link</a>
-      </nav>
+    <div id="app" class="container">
+      
+            <button
+                   v-on:click="addProduct"
+                   placeholder="Add Product">Add Product</button>
+          
+            <div class="products">
+              <div
+                   is="product"
+                   v-for="(product, index) in products"
+                   :id="index"
+                   :key="product"
+                   @remove="products.splice(index, 1)"
+                   >
+              </div>
+            </div>
+          </div>
+    <div class="invoice-box">
+        
+
+
+
+      <table cellpadding="0" cellspacing="0">
+        <tr class="top">
+          <td colspan="4">
+            <table>
+              <tr>
+                <td class="title">
+                  <img src="https://www.sparksuite.com/images/logo.png" style="width:100%; max-width:300px;">
+                </td>
+    
+                <td>
+                  Invoice #: 123<br> Created: January 1, 2015<br> Due: February 1, 2015
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+    
+        <tr class="information">
+          <td colspan="4">
+            <table>
+              <tr>
+                <td>
+                  Sparksuite, Inc.<br> 12345 Sunny Road<br> Sunnyville, CA 12345
+                </td>
+    
+                <td>
+                  Acme Corp.<br> John Doe<br> john@example.com
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+    
+        <tr class="heading">
+          <td colspan="3">Payment Method</td>
+          <td>Check #</td>
+        </tr>
+    
+        <tr class="details">
+          <td colspan="3">Check</td>
+          <td>1000</td>
+        </tr>
+    
+        <tr class="heading">
+          <td>Item</td>
+          <td>Unit Cost</td>
+          <td>Quantity</td>
+          <td>Price</td>
+        </tr>
+    
+        <tr class="item" v-for="item in items">
+          <td><input v-model="item.description" /></td>
+          <td>$<input type="number" v-model="item.price" /></td>
+          <td><input type="number" v-model="item.quantity" /></td>
+          <td>$ ${ item.price * item.quantity | currency }</td>
+        </tr>
+    
+        <tr>
+          <td colspan="4">
+            <button class="btn-add-row" @click="addRow">Add row</button>
+          </td>
+        </tr>
+    
+        <tr class="total">
+          <td colspan="3"></td>
+          <td>Total: $ ${ total | currency }</td>
+        </tr>
+      </table>
     </div>
-    
-    <main role="main" class="container">
-      <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
-        <div class="lh-100">
-          <h6 class="mb-0 text-white lh-100">Shops</h6>
-          <small>Since 2011</small>
-        </div>
-      </div>
-    
-      <div class="my-3 p-3 bg-white rounded shadow-sm">
-        <h6 class="border-bottom border-gray pb-2 mb-0">Recent updates</h6>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-          <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <strong class="d-block text-gray-dark">@username</strong>
-            Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-          </p>
-        </div>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#e83e8c"></rect><text x="50%" y="50%" fill="#e83e8c" dy=".3em">32x32</text></svg>
-          <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <strong class="d-block text-gray-dark">@username</strong>
-            Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-          </p>
-        </div>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#6f42c1"></rect><text x="50%" y="50%" fill="#6f42c1" dy=".3em">32x32</text></svg>
-          <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <strong class="d-block text-gray-dark">@username</strong>
-            Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-          </p>
-        </div>
-        <small class="d-block text-right mt-3">
-          <a href="#">All updates</a>
-        </small>
-      </div>
-    
-      <div class="my-3 p-3 bg-white rounded shadow-sm">
-        <h6 class="border-bottom border-gray pb-2 mb-0">Suggestions</h6>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-          <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <div class="d-flex justify-content-between align-items-center w-100">
-              <strong class="text-gray-dark">Full Name</strong>
-              <a href="#">Follow</a>
-            </div>
-            <span class="d-block">@username</span>
-          </div>
-        </div>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-          <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <div class="d-flex justify-content-between align-items-center w-100">
-              <strong class="text-gray-dark">Full Name</strong>
-              <a href="#">Follow</a>
-            </div>
-            <span class="d-block">@username</span>
-          </div>
-        </div>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-          <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <div class="d-flex justify-content-between align-items-center w-100">
-              <strong class="text-gray-dark">Full Name</strong>
-              <a href="#">Follow</a>
-            </div>
-            <span class="d-block">@username</span>
-          </div>
-        </div>
-        <small class="d-block text-right mt-3">
-          <a href="#">All suggestions</a>
-        </small>
-      </div>
-    </main>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-          <script>window.jQuery || document.write('<script src="/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script><script src="/docs/4.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
-            <script src="offcanvas.js"></script>
-    
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  
+    <!-- vue.js files -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+    <script>
+      Vue.component('product', {
+  template: `
+    <div>
+      <select v-model="product">
+        <option value="Product One">Product One</option>
+        <option value="Product Two">Product Two</option>
+      </select>
+      <input class="input" id="bags" v-model="bags" type="number" placeholder="Bags">
+      <input class="input" id="volume" v-model="volume" type="number" placeholder="Volume">
+      <button @click="$emit('remove')">Delete</button>
+    </div>
+  `,
+  data(){
+    return {
+      product: null,
+      bags: null,
+      volume: null
+    }
+  },
+  watch:{
+    bags(newVal){
+      this.volume = newVal * 25
+    },
+    volume(newVal){
+      this.bags = newVal / 25
+    }
+  }
+})
+
+new Vue({
+  el: '#app',
+  data: {
+    products: []
+  },
+  methods: {
+    addProduct: function() {
+      this.products.push(this.index);
+    },
+  }
+})
+
+  const app = new Vue({
+  el: "table",
+  delimiters: ['${','}'],
+  data: {
+    items: [
+      { description: "Website design", quantity: 1, price: 300 },
+      { description: "Website design", quantity: 1, price: 75 },
+      
+    ]
+  },
+  computed: {
+    total() {
+      return this.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+    }
+  },
+  methods: {
+    addRow() {
+      this.items.push({ description: "", quantity: 1, price: 0 });
+    }
+  },
+  filters: {
+    currency(value) {
+      return value.toFixed(2);
+    }
+  }
+});
+
+    </script>
 </body>
 </html>

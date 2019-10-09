@@ -20,21 +20,24 @@ class ReadBrandSerializer(serializers.HyperlinkedModelSerializer):
     category_id = CategorySerializer()
     class Meta:
         model = Brand
-        fields =  ['brand_id','brand_name','brand_code','category_id','brand_p_cost','brand_q_cost','brand_n_cost','brand_d_cost','brand_l_cost','brand_xg_cost','brand_y_cost','brand_p_sale','brand_q_sale','brand_n_sale','brand_d_sale','brand_l_sale','brand_xg_sale','brand_y_sale']
+        fields =  ['brand_id','brand_name','category_id','brand_p_cost','brand_q_cost','brand_n_cost','brand_d_cost','brand_l_cost','brand_xg_cost','brand_y_cost','brand_p_sale','brand_q_sale','brand_n_sale','brand_d_sale','brand_l_sale','brand_xg_sale','brand_y_sale']
 
 class BrandSerializer(serializers.ModelSerializer):
         brand_id = serializers.ReadOnlyField()
         category_id = serializers.PrimaryKeyRelatedField(read_only=False, queryset=Category.objects.all())
         class Meta:
             model = Brand
-            fields =  ['brand_id','brand_name','brand_code','category_id','brand_p_cost','brand_q_cost','brand_n_cost','brand_d_cost','brand_l_cost','brand_xg_cost','brand_y_cost','brand_p_sale','brand_q_sale','brand_n_sale','brand_d_sale','brand_l_sale','brand_xg_sale','brand_y_sale']
+            fields =  ['brand_id','brand_name','category_id','brand_p_cost','brand_q_cost','brand_n_cost','brand_d_cost','brand_l_cost','brand_xg_cost','brand_y_cost','brand_p_sale','brand_q_sale','brand_n_sale','brand_d_sale','brand_l_sale','brand_xg_sale','brand_y_sale']
+
+
+
 
 class BrandDetailSerializer(serializers.ModelSerializer):
     brand_id = serializers.ReadOnlyField()
     category_id = serializers.PrimaryKeyRelatedField(read_only=False, queryset=Category.objects.all())
     class Meta:
         model = Brand
-        fields =  ['brand_id','brand_name','brand_code','category_id','brand_p_cost','brand_q_cost','brand_n_cost','brand_d_cost','brand_l_cost','brand_xg_cost','brand_y_cost','brand_p_sale','brand_q_sale','brand_n_sale','brand_d_sale','brand_l_sale','brand_xg_sale','brand_y_sale']
+        fields =  ['brand_id','brand_name','category_id','brand_p_cost','brand_q_cost','brand_n_cost','brand_d_cost','brand_l_cost','brand_xg_cost','brand_y_cost','brand_p_sale','brand_q_sale','brand_n_sale','brand_d_sale','brand_l_sale','brand_xg_sale','brand_y_sale']
 
 
 

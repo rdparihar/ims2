@@ -21,7 +21,7 @@ class Category(models.Model):
 
 class Brand(models.Model):
     brand_id = models.IntegerField(primary_key=True, verbose_name = 'Brand Id')
-    brand_code = models.IntegerField(unique=True, verbose_name = 'Brand Code')
+    # brand_code = models.IntegerField(unique=True, verbose_name = 'Brand Code')
     brand_name = models.CharField(max_length=200, verbose_name = 'Brand Name')
     category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
     brand_p_cost = models.DecimalField(max_digits=22, decimal_places=2,default=Decimal(0.00))

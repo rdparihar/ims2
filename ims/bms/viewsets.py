@@ -61,6 +61,13 @@ class BrandDetailViewSet(LoginRequiredMixin, viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['brand_id', 'category_id', 'brand_name']
 
+
+
+
+  
+
+    
+
 class UserViewSet(LoginRequiredMixin,viewsets.ModelViewSet):
     login_url = settings.LOGIN_REDIRECT_URL
     queryset = User.objects.all()
@@ -132,6 +139,10 @@ class ShiftViewSet(LoginRequiredMixin,viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ['brand_id__brand_id','stock_shift_date','stock_shift_from','stock_shift_to__shop_id']
 
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['brand_id', 'stock_shift_date', 'stock_shift_from', 'stock_shift_to']
+
+
 class InvoiceViewSet(LoginRequiredMixin, viewsets.ModelViewSet):
     login_url = settings.LOGIN_REDIRECT_URL
     queryset = Invoice.objects.all()
@@ -147,7 +158,7 @@ class InvoiceViewSet(LoginRequiredMixin, viewsets.ModelViewSet):
     # search_fields = ['brand_id__brand_id']
  
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['brand_id', 'invoice_date']
+    filterset_fields = ['brand_id', 'invoice_date', 'shop_id']
 
 # class TodayInvoiceViewSet(LoginRequiredMixin, viewsets.ModelViewSet):
 #     login_url = settings.LOGIN_REDIRECT_URL
