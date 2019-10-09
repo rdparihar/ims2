@@ -30,7 +30,15 @@
                 <a href="#" class="nav-item nav-link">Closing</a>
                 <a href="#" class="nav-item nav-link">Partners</a>
                 <a href="#" class="nav-item nav-link">Expenses</a>
-                <a href="#" class="nav-item nav-link">Reports</a>
+                 <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Reports</a>
+                    <div class="dropdown-menu">
+                        <a href="{% url 'dsreport' %}" class="dropdown-item">Daily Sales Report</a>
+
+
+                      
+                    </div>
+                </div>
                             
             </div>
             

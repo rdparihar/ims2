@@ -9,12 +9,18 @@ from django.views import generic
 from .models import Category, Brand, Shop, Invoice, Quantity, Shift , BmsUser
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+import datetime
+import xlrd,xlwt,os
+from xlutils.filter import process,XLRDReader,XLWTWriter
+from .models import Category, Brand, Shop, Invoice, Quantity, Shift , BmsUser , StockOpen,StockClose
+
 
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in
 
-import datetime
 
 
 @receiver(user_logged_in)
@@ -196,24 +202,113 @@ def HomeView(request, id=None):
 
 
 
+def serve_file(path, filename):
+    with open(path, "rb") as excel:
+        data = excel.read()
+    response = HttpResponse(data,content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+    return response
 
+def copy2(wb):
+    w = XLWTWriter()
+    process( XLRDReader(wb,'unknown.xls'), w )
+    return w.output[0][1], w.style_list
 
+def update_content(dsreport_date,ds_shop_name):
+    dst=  os.path.dirname(os.path.realpath(__file__)) +  '\DAY_SALE_REPORT_TEMPLATE.xls'
+    rdbook = xlrd.open_workbook(dst, formatting_info=True)
+    sheetx = 0
+    rdsheet = rdbook.sheet_by_index(sheetx)
+    wtbook, style_list = copy2(rdbook)
+    wtsheet = wtbook.get_sheet(sheetx)
 
+    shop_name_xf_index=rdsheet.cell_xf_index(0, 0)
+    shop_name_style=style_list[shop_name_xf_index]
+    category_name_xf_index=rdsheet.cell_xf_index(3, 1)
+    category_name_style=style_list[category_name_xf_index]
+    brand_code_xf_index=rdsheet.cell_xf_index(4, 0)
+    brand_code_style=style_list[brand_code_xf_index]
+    brand_name_xf_index=rdsheet.cell_xf_index(4, 1)
+    brand_name_style=style_list[brand_name_xf_index]
+    ob_qty_xf_index=rdsheet.cell_xf_index(4, 2)
+    ob_qty_style=style_list[ob_qty_xf_index]
+    receipt_qty_xf_index=rdsheet.cell_xf_index(4, 9)
+    receipt_qty_style=style_list[receipt_qty_xf_index]
+    cb_qty_xf_index=rdsheet.cell_xf_index(4, 16)
+    cb_qty_style=style_list[cb_qty_xf_index]
+    sb_qty_xf_index=rdsheet.cell_xf_index(4, 23)
+    sb_qty_style=style_list[sb_qty_xf_index]
+    mrp_rate_xf_index=rdsheet.cell_xf_index(4, 30)
+    mrp_rate_style=style_list[mrp_rate_xf_index]
+    sv_xf_index=rdsheet.cell_xf_index(4, 37)
+    sv_style=style_list[sv_xf_index]
 
+    dsreport_date = dsreport_date
+    ds_shop_name = ds_shop_name
+    dsreport_date = datetime.datetime.strptime(dsreport_date, '%Y-%m-%d').date()
+    
+    row_num=3
+    category_rows = Category.objects.all().values('category_id', 'category_name')
+    for category in category_rows:
+        category_id=category['category_id']
+        category_name=category['category_name']
+        wtsheet.write(row_num, 1, category_name, category_name_style)  ## Col=1(always)
+        row_num=row_num+1
+        brand_rows = Brand.objects.all().filter(category_id = category_id).values('brand_id', 'brand_name')
+        for brand in brand_rows:
+            brand_id=brand['brand_id']
+            brand_name=brand['brand_name']
+            wtsheet.write(row_num, 0, brand_id, brand_code_style)  ## Col=1(always)
+            wtsheet.write(row_num, 1, brand_name, brand_name_style)  ## Col=1(always)
+            stock_opens = StockOpen.objects.all().filter(brand_id=brand_id,open_shop_id=ds_shop_name,open_date=dsreport_date).values()
+            for stock_open in stock_opens:
+                wtsheet.write(row_num, 2, stock_open['open_p'], ob_qty_style)
+                wtsheet.write(row_num, 3, stock_open['open_q'], ob_qty_style)
+                wtsheet.write(row_num, 4, stock_open['open_n'], ob_qty_style)
+                wtsheet.write(row_num, 5, stock_open['open_d'], ob_qty_style)
+                wtsheet.write(row_num, 6, stock_open['open_l'], ob_qty_style)
+                wtsheet.write(row_num, 7, stock_open['open_xg'], ob_qty_style)
+                wtsheet.write(row_num, 8, stock_open['open_y'], ob_qty_style)
+            
+            Quantity_Master = ['P','Q','N','D','L','XG','Y']
+            qty_cnt=0
+            for quantity in Quantity_Master:
+                stock_receipts = Invoice.objects.all().filter(brand_id=brand_id,shop_id=ds_shop_name,invoice_date=dsreport_date,invoice_brand_size=quantity).values('invoice_brand_qty').first()
+                if stock_receipts:
+                    wtsheet.write(row_num, 9+qty_cnt, stock_receipts['invoice_brand_qty'], receipt_qty_style)
+                    qty_cnt=qty_cnt+1
 
+            stock_closes = StockClose.objects.all().filter(brand_id=brand_id,close_shop_id=ds_shop_name,close_date=dsreport_date).values()
+            for stock_close in stock_closes:
+                wtsheet.write(row_num, 16, stock_close['close_qty_p'], cb_qty_style)
+                wtsheet.write(row_num, 17, stock_close['close_qty_q'], cb_qty_style)
+                wtsheet.write(row_num, 18, stock_close['close_qty_n'], cb_qty_style)
+                wtsheet.write(row_num, 19, stock_close['close_qty_d'], cb_qty_style)
+                wtsheet.write(row_num, 20, stock_close['close_qty_l'], cb_qty_style)
+                wtsheet.write(row_num, 21, stock_close['close_qty_xg'], cb_qty_style)
+                wtsheet.write(row_num, 22, stock_close['close_qty_y'], cb_qty_style)
+                wtsheet.write(row_num, 23, stock_close['close_sale_p'], sb_qty_style)
+                wtsheet.write(row_num, 24, stock_close['close_sale_q'], sb_qty_style)
+                wtsheet.write(row_num, 25, stock_close['close_sale_n'], sb_qty_style)
+                wtsheet.write(row_num, 26, stock_close['close_sale_d'], sb_qty_style)
+                wtsheet.write(row_num, 27, stock_close['close_sale_l'], sb_qty_style)
+                wtsheet.write(row_num, 28, stock_close['close_sale_xg'], sb_qty_style)
+                wtsheet.write(row_num, 29, stock_close['close_sale_y'], sb_qty_style)
 
+            
+            row_num=row_num+1
+        row_num=row_num+1
 
+    output_file=  os.path.dirname(os.path.realpath(__file__)) + '\DAY_SALE_REPORT.xls'         
+    wtbook.save(output_file)
 
-
-
-
-
-
-
-
-    # if request.method == "POST":
-    #     emp.delete()
-    #     return HttpResponseRedirect("/employee/")
-    # context = { "emp" : emp }
-    # template = "ems/delete-view.html"
-    # return render(request, template, context )
+def dsreport(request):
+    if request.method =="POST":
+        dsreport_date = request.POST['dsreport_date']
+        ds_shop_name = request.POST['ds_shop_name']
+        update_content(dsreport_date,ds_shop_name)
+        response = HttpResponse(content_type='application/ms-excel')
+        path=  os.path.dirname(os.path.realpath(__file__)) +  '\DAY_SALE_REPORT.xls'             
+        return serve_file(path, 'DAY_SALE_REPORT.xls')
+    else:
+        return render(request,'daily_sales_report.html') 

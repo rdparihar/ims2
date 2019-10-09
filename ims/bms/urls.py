@@ -25,4 +25,7 @@ urlpatterns = [
     path('created/', TemplateView.as_view(template_name='created.html'), name="created"),  
     path('error/', TemplateView.as_view(template_name='error.html'), name="error"),  
     path('test/', TemplateView.as_view(template_name='test.html')),
+#    path('dsreport/', TemplateView.as_view(template_name='daily_sales_report.html'), name="dsreport"), 
+    path('dsreport/', views.dsreport, name='dsreport'),
+ 
 ]
