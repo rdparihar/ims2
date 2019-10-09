@@ -41,179 +41,145 @@
     {% include 'topnavbar.html' %}
 
 <br>
-    
-    <div id="app" class="container">
-      
-            <button
-                   v-on:click="addProduct"
-                   placeholder="Add Product">Add Product</button>
-          
-            <div class="products">
-              <div
-                   is="product"
-                   v-for="(product, index) in products"
-                   :id="index"
-                   :key="product"
-                   @remove="products.splice(index, 1)"
-                   >
-              </div>
-            </div>
-          </div>
-    <div class="invoice-box">
-        
-
-
-
-      <table cellpadding="0" cellspacing="0">
-        <tr class="top">
-          <td colspan="4">
-            <table>
-              <tr>
-                <td class="title">
-                  <img src="https://www.sparksuite.com/images/logo.png" style="width:100%; max-width:300px;">
-                </td>
-    
-                <td>
-                  Invoice #: 123<br> Created: January 1, 2015<br> Due: February 1, 2015
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-    
-        <tr class="information">
-          <td colspan="4">
-            <table>
-              <tr>
-                <td>
-                  Sparksuite, Inc.<br> 12345 Sunny Road<br> Sunnyville, CA 12345
-                </td>
-    
-                <td>
-                  Acme Corp.<br> John Doe<br> john@example.com
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-    
-        <tr class="heading">
-          <td colspan="3">Payment Method</td>
-          <td>Check #</td>
-        </tr>
-    
-        <tr class="details">
-          <td colspan="3">Check</td>
-          <td>1000</td>
-        </tr>
-    
-        <tr class="heading">
-          <td>Item</td>
-          <td>Unit Cost</td>
-          <td>Quantity</td>
-          <td>Price</td>
-        </tr>
-    
-        <tr class="item" v-for="item in items">
-          <td><input v-model="item.description" /></td>
-          <td>$<input type="number" v-model="item.price" /></td>
-          <td><input type="number" v-model="item.quantity" /></td>
-          <td>$ ${ item.price * item.quantity | currency }</td>
-        </tr>
-    
-        <tr>
-          <td colspan="4">
-            <button class="btn-add-row" @click="addRow">Add row</button>
-          </td>
-        </tr>
-    
-        <tr class="total">
-          <td colspan="3"></td>
-          <td>Total: $ ${ total | currency }</td>
-        </tr>
-      </table>
-    </div>
-
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+ 
   
-    <!-- vue.js files -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
-    <script>
-      Vue.component('product', {
-  template: `
-    <div>
-      <select v-model="product">
-        <option value="Product One">Product One</option>
-        <option value="Product Two">Product Two</option>
-      </select>
-      <input class="input" id="bags" v-model="bags" type="number" placeholder="Bags">
-      <input class="input" id="volume" v-model="volume" type="number" placeholder="Volume">
-      <button @click="$emit('remove')">Delete</button>
-    </div>
-  `,
-  data(){
-    return {
-      product: null,
-      bags: null,
-      volume: null
-    }
-  },
-  watch:{
-    bags(newVal){
-      this.volume = newVal * 25
-    },
-    volume(newVal){
-      this.bags = newVal / 25
-    }
-  }
-})
 
-new Vue({
-  el: '#app',
-  data: {
-    products: []
-  },
-  methods: {
-    addProduct: function() {
-      this.products.push(this.index);
-    },
-  }
-})
+<main role="main" class="container">
+  <INPUT type="button" value="Add Row" onclick="addRow('dataTable')" />
+  <INPUT type="button" value="Delete Row" onclick="deleteRow('dataTable')" />
 
-  const app = new Vue({
-  el: "table",
-  delimiters: ['${','}'],
-  data: {
-    items: [
-      { description: "Website design", quantity: 1, price: 300 },
-      { description: "Website design", quantity: 1, price: 75 },
-      
-    ]
-  },
-  computed: {
-    total() {
-      return this.items.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0
-      );
-    }
-  },
-  methods: {
-    addRow() {
-      this.items.push({ description: "", quantity: 1, price: 0 });
-    }
-  },
-  filters: {
-    currency(value) {
-      return value.toFixed(2);
-    }
+  
+          <form action="" method="post" enctype="multipart/form-data">
+          invoice:<INPUT type="text" name="invoice id"/>
+  
+              <TABLE id="dataTable" width="350px" border="1" style="border-collapse:collapse;">
+          <TR>
+          <TH>Select</TH>
+          <TH>Sr. No.</TH>
+          <TH>Item</TH>
+          <TH>Qty</TH>
+          <TH>Cost</TH>
+          <TH formula="cost*qty"summary="sum">Price</TH>
+          </TR>
+                  <TR>
+                      <TD><INPUT type="checkbox" name="chk[]"/></TD>
+                      <TD> 1 </TD>
+                      <TD> <INPUT type="text" name="item[] "/> </TD>
+                      <TD> <INPUT type="text" id="qty1" name="qty[]"/> </TD>
+                      <TD> <INPUT type="text" id="cost1" name="cost[]" /> </TD>
+                      <TD> <INPUT type="text" id="price1" name="price[]" /> </TD>
+                  </TR>
+  
+              </TABLE>
+              total: <input type="text" readonly="readonly" id="total" /><br/>
+          <input type="button" value="Total" onclick="totalIt()" /><input type="submit" />
+   </form>
+  
+  
+  </main>
+  
+  
+  <script>
+  
+  
+  
+  function calc(idx) {
+    var price = parseFloat(document.getElementById("cost"+idx).value)*
+                parseFloat(document.getElementById("qty"+idx).value);
+    //  alert(idx+":"+price);  
+    document.getElementById("price"+idx).value= isNaN(price)?"0.00":price.toFixed(2);
+     
   }
-});
-
+  
+  function totalIt() {
+    var qtys = document.getElementsByName("qty[]");
+    var total=0;
+    for (var i=1;i<=qtys.length;i++) {
+      calc(i);  
+      var price = parseFloat(document.getElementById("price"+i).value);
+      total += isNaN(price)?0:price;
+    }
+    document.getElementById("total").value=isNaN(total)?"0.00":total.toFixed(2);                        
+  }      
+  
+  window.onload=function() {
+    document.getElementsByName("qty[]")[0].onkeyup=function() {calc(1)};
+    document.getElementsByName("cost[]")[0].onkeyup=function() {calc(1)};
+  }
+  
+  var rowCount =0;
+      function addRow(tableID) {
+  
+          var table = document.getElementById(tableID);
+  
+          var rowCount = table.rows.length;
+          var row = table.insertRow(rowCount);
+  
+          var cell1 = row.insertCell(0);
+          var element1 = document.createElement("input");
+          element1.type = "checkbox";
+          element1.name = "chk[]";
+          cell1.appendChild(element1);
+  
+          var cell2 = row.insertCell(1);
+          cell2.innerHTML = rowCount;
+  
+          var cell3 = row.insertCell(2);
+          var element3 = document.createElement("input");
+          element3.type = "text";
+          element3.name = "item[]";
+          element3.required = "required";
+          cell3.appendChild(element3);
+  
+          var cell4 = row.insertCell(3);
+          var element4 = document.createElement("input");
+          element4.type = "text";
+          element4.name = "qty[]";
+          element4.id = "qty"+rowCount;
+          element4.onkeyup=function() {calc(rowCount);}
+          cell4.appendChild(element4);
+  
+          var cell5 = row.insertCell(4);
+          var element5 = document.createElement("input");
+          element5.type = "text";
+          element5.name = "cost[]";
+          element5.id = "cost"+rowCount;
+          element5.onkeyup=function() {calc(rowCount);}
+          cell5.appendChild(element5);
+  
+          var cell6 = row.insertCell(5);
+          var element6 = document.createElement("input");
+          element6.type = "text";
+          element6.name = "price[]";
+          element6.id = "price"+rowCount
+          cell6.appendChild(element6);
+  
+  
+  
+      }
+  
+      function deleteRow(tableID) {
+          try {
+          var table = document.getElementById(tableID);
+          var rowCount = table.rows.length;
+  
+          for(var i=0; i<rowCount; i++) {
+              var row = table.rows[i];
+              var chkbox = row.cells[0].childNodes[0];
+              if(null != chkbox && true == chkbox.checked) {
+                  table.deleteRow(i);
+                  rowCount--;
+                  i--;
+              }
+  
+  
+          }
+          }catch(e) {
+              alert(e);
+          }
+      }
+    
     </script>
+   
 </body>
 </html>
