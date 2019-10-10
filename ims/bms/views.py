@@ -79,8 +79,6 @@ class ShopListView(LoginRequiredMixin, generic.ListView):
         userid = self.request.user.id
         context['user'] = self.request.user
         context['bms_users'] = BmsUser.objects.all()
-        print(isSuperUser)
-        print(isSuperUser)
 
 
         if isAdmin or isSuperUser:
@@ -119,7 +117,6 @@ class AdminView(LoginRequiredMixin, generic.ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         isAdmin = self.request.session['isAdmin']
-        print(isAdmin)
         context = { "isAdmin" : isAdmin}
 
             
@@ -160,7 +157,6 @@ def HomeView(request, id=None):
     request.session['isAdmin'] = isAdminUser
     request.session['isUser'] = isUser
     request.session['isSubAdmin'] = isSubAdmin
-    print(id)
     bms_count=BmsUser.objects.filter(user_role = 'A').count()
     if bms_count ==0:
         return HttpResponseRedirect("/new/")
@@ -178,14 +174,12 @@ def HomeView(request, id=None):
         return HttpResponseRedirect("/error/")
 
     if bms_role =='A':
-        print("You are admin")
         request.session['isBmsUser'] = True
         request.session['isAdmin'] = True
         return HttpResponseRedirect("/home/")
     else:
         # bms_role_s=BmsUser.objects.all().filter(username = id, user_role = 'S').values('user_role')[0]['user_role']
         if bms_role =='S':
-            print ("you are subadmin ")
             request.session['isBmsUser'] = True
             request.session['isSubAdmin'] = True
             return HttpResponseRedirect("/shop/")
@@ -193,7 +187,6 @@ def HomeView(request, id=None):
             request.session['isBmsUser'] = True
             request.session['isUser'] = True
 
-            print("You are shopkeeper")
             return HttpResponseRedirect("/shop/")
 
         
