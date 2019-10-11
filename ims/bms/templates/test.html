@@ -1,42 +1,8 @@
 
-<html>
-<head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-        <meta name="generator" content="Jekyll v3.8.5">
-        <title>BMS</title>
-    
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    
-        <!-- Bootstrap core CSS -->
-        <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    
-        <style>
-          .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-          }
-    
-          @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-              font-size: 3.5rem;
-            }
-          }
-        </style>
-        <!-- Custom styles for this template -->
-        {% load static %}
-        <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="{% static 'css/offcanvas.css' %}" rel="stylesheet">
-</head>
+<!DOCTYPE html>
+{% load static %}
+{% include 'head.html' %}
+
 <body class="bg-light">
     {% include 'topnavbar.html' %}
 
@@ -45,139 +11,595 @@
   
 
 <main role="main" class="container">
-  <INPUT type="button" value="Add Row" onclick="addRow('dataTable')" />
-  <INPUT type="button" value="Delete Row" onclick="deleteRow('dataTable')" />
+
+
+    <div id="StockEntry" class="tab-pane active">
+      
+
+          <div class="my-3 p-3 bg-white rounded shadow-sm "style="box-shadow: 0px 4px 6px -2px #888888 !important;">
+              <div class="alert alert-warning alert-dismissible fade show" role="alert" v-if="serverError">
+                  <strong>Warning !</strong> ${ msg }.
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+                
+<tr v-for="(invoic, k) in Invoices" :key="k">
+    <td scope="row" class="trashIconContainer">
+        <i class="far fa-trash-alt" @click="deleteRow(k, invoic)"></i>
+    </td>
+    <td>
+        <input class="form-control" type="text" v-model="invoice.invoic_brand_qty" />
+    </td>
+    <td>
+        <input class="form-control" type="text" v-model="invoice.invoic_total" />
+    </td>
+
+ </tr>  
+ <button type='button' class="btn btn-info" @click="addNewRow">
+    <i class="fas fa-plus-circle"></i>
+    Add
+</button> 
+       
+        <div class=" " v-for="(invoice, k) in newInvoice" :key="k">
+
+            <form v-on:submit.prevent="addInvoice()">
+                <div class="row ">
+                    <div class="col">
+                        <label for="category_id">Category</label>
+                        <select v-model.number="newInvoice.category_id" name="newInvoice.category_id" class="form-control" @change="getBrands()">
+                          <option v-for="categ in categories" :value="categ.category_id">${categ.category_name} </option>   
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="brand_id">Brand</label>
+                        <select v-model.number="newInvoice.brand_id" name="newInvoice.brand_id"
+                          class="form-control" @change="getRates()">
+                          <option  v-for="brand in brands" :value="brand.brand_id">${brand.brand_name}</option>
+                        </select>
+                    </div>
+                    <div class="col ">
+                        <label for="brand_id">Brand Code</label>
+                        <input
+                        type="text"
+                        id="brand_id"
+                        class="form-control"
+                        v-model.number="newInvoice.brand_id" 
+                        name="newInvoice.brand_id"
+                        placeholder="Enter Brand Code"
+                        required="required"
+                        value=""
+                        rows="3" @change="getRatesb()">
+                    </div>
+                  </div>
+
+                <br>
+
+            <div class="row form-inline ">
+
+                    
+                     
+                      <div class="col">
+                          <label for="invoice_brand_size">Brand Size</label>
+                          <select name="newInvoice.invoice_brand_size" class="form-control" v-model="newInvoice.invoice_brand_size"
+                          name="newInvoice.invoice_brand_size" @change="calBottle()">
+                          <option v-for="bsize in brandsSize"  :value="bsize.quantity_name">
+                              ${bsize.quantity_name} - ${bsize.quantity_bottles}
+                          </option>
+                          </select>
+                          
+                          
+                      </div>
+                      
+                      <div class="col">
+                          <label for="invoice_brand_qty">Brand Qty</label>
+                          <input
+                          type="text"
+                          id="invoice_brand_qty"
+                          class="form-control"
+                          name="newInvoice.invoice_brand_qty"
+                          placeholder="Brand Qty"
+                          v-model="newInvoice.invoice_brand_qty"
+                          required="required"
+                          rows="3" @change="calBottle()">
+                      </div>
+                      <div class="col">
+                          <label for="invoice_rate_per_case">Brand Rate </label>
+                          <input
+                          type="text"
+                          id="invoice_rate_per_case"
+                          class="form-control"
+                          value="rate"
+                          name="newInvoice.invoice_rate_per_case"
+                          v-model="newInvoice.invoice_rate_per_case"
+                          rows="3" readonly>
+                      </div>
+                      <div class="col">
+                          <label for="invoice_no_of_cases">Cases</label>
+                          <input
+                          type="text"
+                          id="invoice_no_of_cases"
+                          class="form-control"
+                          placeholder="No.of case"
+                          name="newInvoice.invoice_no_of_cases"
+
+                          v-model="newInvoice.invoice_no_of_cases"
+                          required="required"
+                          rows="3" readonly>
+                      </div>
+                      <div class="col">
+                          <label for="invoice_total">Total</label>
+                          <input
+                          type="text"
+                          id="invoice_total"
+                          placeholder="Total"
+                          class="form-control"
+                          name="newInvoice.invoice_total"
+                          v-model="newInvoice.invoice_total"
+                          required="required"
+                          rows="3" readonly>
+                      </div>
+                  </div>
+                  
+                <br>
+                  <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Save changes</button>
+                  </div>
+              </form>
+        </div>
+          <!-- <button type='button' class="btn btn-light disabled" @click="addNewRow">
+              <i class="fas fa-plus"></i>
+              Add
+          </button> -->
+          </div>
+          <div class="my-3 p-3 bg-white rounded shadow-rd">
+              
+    
+         
+
+
+  <INPUT type="button" class="btn btn-secondary" value="Add Row" onclick="addRow('dataTable')" />
+  <INPUT type="button" class="btn btn-secondary" value="Delete Row" onclick="deleteRow('dataTable')" />
+
+<br>
+
+          <form action="" method="post" enctype="multipart/form-data">
 
   
-          <form action="" method="post" enctype="multipart/form-data">
-          invoice:<INPUT type="text" name="invoice id"/>
-  
-              <TABLE id="dataTable" width="350px" border="1" style="border-collapse:collapse;">
+          <TABLE id="dataTable" width="350px" border="1" style="border-collapse:collapse;">
           <TR>
           <TH>Select</TH>
           <TH>Sr. No.</TH>
           <TH>Item</TH>
           <TH>Qty</TH>
           <TH>Cost</TH>
+
           <TH formula="cost*qty"summary="sum">Price</TH>
           </TR>
                   <TR>
                       <TD><INPUT type="checkbox" name="chk[]"/></TD>
                       <TD> 1 </TD>
                       <TD> <INPUT type="text" name="item[] "/> </TD>
+
                       <TD> <INPUT type="text" id="qty1" name="qty[]"/> </TD>
                       <TD> <INPUT type="text" id="cost1" name="cost[]" /> </TD>
                       <TD> <INPUT type="text" id="price1" name="price[]" /> </TD>
                   </TR>
   
               </TABLE>
-              total: <input type="text" readonly="readonly" id="total" /><br/>
-          <input type="button" value="Total" onclick="totalIt()" /><input type="submit" />
+              total: <input type="text"  readonly="readonly" id="total" /><br/>
+              <input type="button" class="btn btn-success" value="Total" onclick="totalIt()" /> 
+              <input class="btn btn-secondary" type="submit" />
    </form>
   
-  
+  </div>
   </main>
   
-  
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+ <!-- Icons -->
+ <script src="{% static 'js/vendor/feather.min.js' %}"></script>
   <script>
-  
-  
-  
-  function calc(idx) {
-    var price = parseFloat(document.getElementById("cost"+idx).value)*
-                parseFloat(document.getElementById("qty"+idx).value);
-    //  alert(idx+":"+price);  
-    document.getElementById("price"+idx).value= isNaN(price)?"0.00":price.toFixed(2);
-     
-  }
-  
-  function totalIt() {
-    var qtys = document.getElementsByName("qty[]");
-    var total=0;
-    for (var i=1;i<=qtys.length;i++) {
-      calc(i);  
-      var price = parseFloat(document.getElementById("price"+i).value);
-      total += isNaN(price)?0:price;
+    feather.replace()
+  </script>
+  <!-- vue.js files -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+  <script type="text/javascript">
+    Vue.http.headers.common['X-CSRFToken'] = "{{ csrf_token }}";
+    var myObject =  new Vue({
+      el: '#StockEntry',
+      delimiters: ['${','}'],
+      data: {
+        invoices: [],
+        brands:[],
+        brandsSize:[],
+        categories:[],
+        serverError: false,
+        msg: null,
+        loading: true,
+        rate: 00,
+        currentInvoice: {},
+        message: null,
+        rows: [],
+        Invoices:[ {            
+            invoice_brand_qty: '',
+           
+            invoice_total: 0
+
+        }],
+        newInvoice:{   
+            "shop_id": null,
+            "brand_id": null,
+            "category_id": null,
+            "invoice_brand_size": null,
+            "invoice_brand_qty": null,
+            "invoice_rate_per_case": null, "invoice_rate_per_case_P": null, "invoice_rate_per_case_N": null,
+            "invoice_no_of_cases": null,
+            "invoice_total": 0
+
+        },
+        invoice_products: [{
+            product_no: '',
+            product_name: '',
+            product_price: '',
+            product_qty: '',
+            line_total: 0
+        }],
+        search_term: '',
+      },
+      mounted: function() {
+        this.getCategories();
+        this.getBrands();
+        this.getBrandsSize();
+        // this.getRates();
+      },
+      computed: {
+    total() {
+      return this.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
     }
-    document.getElementById("total").value=isNaN(total)?"0.00":total.toFixed(2);                        
-  }      
-  
-  window.onload=function() {
-    document.getElementsByName("qty[]")[0].onkeyup=function() {calc(1)};
-    document.getElementsByName("cost[]")[0].onkeyup=function() {calc(1)};
-  }
-  
-  var rowCount =0;
-      function addRow(tableID) {
-  
-          var table = document.getElementById(tableID);
-  
-          var rowCount = table.rows.length;
-          var row = table.insertRow(rowCount);
-  
-          var cell1 = row.insertCell(0);
-          var element1 = document.createElement("input");
-          element1.type = "checkbox";
-          element1.name = "chk[]";
-          cell1.appendChild(element1);
-  
-          var cell2 = row.insertCell(1);
-          cell2.innerHTML = rowCount;
-  
-          var cell3 = row.insertCell(2);
-          var element3 = document.createElement("input");
-          element3.type = "text";
-          element3.name = "item[]";
-          element3.required = "required";
-          cell3.appendChild(element3);
-  
-          var cell4 = row.insertCell(3);
-          var element4 = document.createElement("input");
-          element4.type = "text";
-          element4.name = "qty[]";
-          element4.id = "qty"+rowCount;
-          element4.onkeyup=function() {calc(rowCount);}
-          cell4.appendChild(element4);
-  
-          var cell5 = row.insertCell(4);
-          var element5 = document.createElement("input");
-          element5.type = "text";
-          element5.name = "cost[]";
-          element5.id = "cost"+rowCount;
-          element5.onkeyup=function() {calc(rowCount);}
-          cell5.appendChild(element5);
-  
-          var cell6 = row.insertCell(5);
-          var element6 = document.createElement("input");
-          element6.type = "text";
-          element6.name = "price[]";
-          element6.id = "price"+rowCount
-          cell6.appendChild(element6);
-  
-  
-  
-      }
-  
-      function deleteRow(tableID) {
-          try {
-          var table = document.getElementById(tableID);
-          var rowCount = table.rows.length;
-  
-          for(var i=0; i<rowCount; i++) {
-              var row = table.rows[i];
-              var chkbox = row.cells[0].childNodes[0];
-              if(null != chkbox && true == chkbox.checked) {
-                  table.deleteRow(i);
-                  rowCount--;
-                  i--;
+  },
+
+      methods: {
+        addNewRow() {
+            this.Invoices.push({
+                product_no: '',
+                product_name: '',
+                product_price: '',
+                product_qty: '',
+                line_total: 0
+            });
+        },
+       
+        getCategories: function() {
+          let api_url = '/api/category/';
+         this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.categories = response.data;
+                console.log("ies", this.categories);
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        getCategory: function(id) {
+          let api_url = '/api/category/';
+          api_url = `/api/category/${id}`;
+
+         this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.categories = response.data;
+                // console.clear()
+                var a=[];
+                a.push(this.categories);
+                this.categories = a;
+                console.log("Category: ", a);
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        getRatea: function(Q){
+          let api_url = '/api/brand/';
+          api_url = `/api/brand/${this.newInvoice.brand_id}`;
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                let status = response.status;
+                console.log(status);
+                
+                let shop_data= response.data;
+                this.serverError= false;
+                console.log("data",shop_data)
+                if (Q == "Q") this.newInvoice.invoice_rate_per_case = shop_data.brand_q_cost;
+                if (Q == "P") this.newInvoice.invoice_rate_per_case = shop_data.brand_p_cost;
+                if (Q == "N") this.newInvoice.invoice_rate_per_case = shop_data.brand_n_cost;
+                if (Q == "XG") this.newInvoice.invoice_rate_per_case = shop_data.brand_xg_cost;
+                if (Q == "L") this.newInvoice.invoice_rate_per_case = shop_data.brand_l_cost;
+                if (Q == "D") this.newInvoice.invoice_rate_per_case = shop_data.brand_d_cost;
+                if (Q == "Y") this.newInvoice.invoice_rate_per_case = shop_data.brand_y_cost;
+               // alert(JSON.stringify(shop_data));
+
+              
+                this.loading = false;
+                
+              }, function(err) {
+                if (err.status == 404) {
+                  this.loading = false;
+                  console.log(err);
+                  this.serverError= true;
+                  this.msg = err.status+ " - " +err.statusText+ ", Select the Brand or Enter Brand code first";
+                }
               }
+              
+              
+              )
+              .catch((err) => {
+                this.loading = false;
+                
+                console.log(err);
+              })
+        },
+          
+
+        
+        calBottle: function() {
+            console.log(this.newInvoice.invoice_brand_size);
+            let api_url = '/api/quantity/';
+            api_url = `/api/quantity/?search=${this.newInvoice.invoice_brand_size}`;
+            this.loading = true;
+            this.$http.get(api_url)
+                .then((response) => {
+                    
+                    this.loading = false;
+                    let qty_data= response.data;
+                    //bottle in brand size
+                    let qty_btl = qty_data.find(u => u.quantity_name === this.newInvoice.invoice_brand_size);
+                    this.getRatea(qty_btl.quantity_name);                   
+                
+                    this.newInvoice.invoice_brand_qty *  qty_btl.quantity_bottles;
+                    this.newInvoice.invoice_no_of_cases = this.newInvoice.invoice_brand_qty *  qty_btl.quantity_bottles;
+                    this.newInvoice.invoice_total = this.newInvoice.invoice_no_of_cases * this.newInvoice.invoice_rate_per_case;
+                  
+                })
+                .catch((err) => {
+                    this.loading = false;
+                    console.log(err);
+                })
+        },
+       
+        getBrands: function (){
+          let api_url = '/api/brand/';
+          api_url = `/api/brand/?search=${this.newInvoice.category_id}`;
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.brands = response.data;
+                this.loading = false;
+              
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        getRatesb: function (){
+          let api_url = '/api/brand/';
+          api_url = `/api/brand/${this.newInvoice.brand_id}`;
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                let status = response.status;
+                console.log(status);
+                this.brands = response.data;
+                
+                let shop_data= response.data;
+                this.serverError= false;
+                console.log("data",shop_data)
+                this.getCategory(shop_data.category_id.category_id);
+            
+               // alert(JSON.stringify(shop_data));
+
+              
+                this.loading = false;
+                
+              }, function(err) {
+                if (err.status == 404) {
+                  this.loading = false;
+                  this.serverError= true;
+                  this.msg = "You have  enterd the invalid Brand Code ";
+                  alert("404 :"+this.msg);
+                }
+              }
+              
+              
+              )
+              .catch((err) => {
+                this.loading = false;
+                
+                console.log(err);
+              })
+        },
+        getRates: function (){
+          let api_url = '/api/brand/';
+          api_url = `/api/brand/?search=${this.newInvoice.category_id}`;
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                
+                let shop_data= response.data;
+                console.log(shop_data)
+                let obj = shop_data.find(u => u.brand_id === this.newInvoice.brand_id);
+                this.newInvoice.invoice_rate_per_case = obj.brand_q_cost;
+                console.log("q cost: " +obj.brand_q_cost);
+
+               
+                this.loading = false;
+                
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        getBrandsSize: function (){
+          let api_url = '/api/quantity/';
+          // api_url = `/api/brand/?search=${this.newInvoice.category_id}`;
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.brandsSize = response.data;
+
+              
+              //  let result = this.brandsSize.map(a => (a.quantity_name)   + a.quantity_bottles);
+              //  this.brandsSize = reformattedArray;
+             
+
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        
+        getInvoice: function(id) {
+          this.loading = true;
+          this.$http.get(`/api/invoice/${id}/`)
+              .then((response) => {
+                this.currentInvoice = response.data;
+                console.log(response.data);
+                $("#editInvoiceModal").modal('show');
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+  
+        },
+
+      });
+ 
   
   
-          }
-          }catch(e) {
-              alert(e);
-          }
-      }
+//    document.onkeyup = function(e) {
+//   if (e.ctrlKey && e.which == 81) {
+//     addRow('dataTable');
+
+//   } 
+// };
+
+  
+//   function calc(idx) {
+//     var price = parseFloat(document.getElementById("cost"+idx).value)*
+//                 parseFloat(document.getElementById("qty"+idx).value);
+//     //  alert(idx+":"+price);  
+//     document.getElementById("price"+idx).value= isNaN(price)?"0.00":price.toFixed(2);
+     
+//   }
+  
+//   function totalIt() {
+//     var qtys = document.getElementsByName("qty[]");
+//     var total=0;
+//     for (var i=1;i<=qtys.length;i++) {
+//       calc(i);  
+//       var price = parseFloat(document.getElementById("price"+i).value);
+//       total += isNaN(price)?0:price;
+//     }
+//     document.getElementById("total").value=isNaN(total)?"0.00":total.toFixed(2);                        
+//   }      
+  
+//   window.onload=function() {
+//     document.getElementsByName("qty[]")[0].onkeyup=function() {calc(1)};
+//     document.getElementsByName("cost[]")[0].onkeyup=function() {calc(1)};
+//   }
+  
+
+ 
+//   var rowCount =0;
+//       function addRow(tableID) {
+  
+//           var table = document.getElementById(tableID);
+  
+//           var rowCount = table.rows.length;
+//           var row = table.insertRow(rowCount);
+  
+//           var cell1 = row.insertCell(0);
+//           var element1 = document.createElement("input");
+//           element1.type = "checkbox";
+//           element1.name = "chk[]";
+//           cell1.appendChild(element1);
+  
+//           var cell2 = row.insertCell(1);
+//           cell2.innerHTML = rowCount;
+  
+//           var cell3 = row.insertCell(2);
+//           var element3 = document.createElement("input");
+//           element3.type = "text";
+//           element3.name = "item[]";
+//           element3.required = "required";
+//           cell3.appendChild(element3);
+  
+//           var cell4 = row.insertCell(3);
+//           var element4 = document.createElement("input");
+//           element4.type = "text";
+//           element4.name = "qty[]";
+//           element4.id = "qty"+rowCount;
+//           element4.onkeyup=function() {calc(rowCount);}
+//           cell4.appendChild(element4);
+  
+//           var cell5 = row.insertCell(4);
+//           var element5 = document.createElement("input");
+//           element5.type = "text";
+//           element5.name = "cost[]";
+//           element5.id = "cost"+rowCount;
+//           element5.onkeyup=function() {calc(rowCount);}
+//           cell5.appendChild(element5);
+  
+//           var cell6 = row.insertCell(5);
+//           var element6 = document.createElement("input");
+//           element6.type = "text";
+//           element6.name = "price[]";
+//           element6.id = "price"+rowCount
+//           cell6.appendChild(element6);
+  
+  
+  
+//       }
+  
+//       function deleteRow(tableID) {
+//           try {
+//           var table = document.getElementById(tableID);
+//           var rowCount = table.rows.length;
+  
+//           for(var i=0; i<rowCount; i++) {
+//               var row = table.rows[i];
+//               var chkbox = row.cells[0].childNodes[0];
+//               if(null != chkbox && true == chkbox.checked) {
+//                   table.deleteRow(i);
+//                   rowCount--;
+//                   i--;
+//               }
+  
+  
+//           }
+//           }catch(e) {
+//               alert(e);
+//           }
+//       }
     
     </script>
    

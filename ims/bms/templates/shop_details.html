@@ -1009,11 +1009,26 @@
               .then((response) => {
                 this.loading = true;
                 this.getInvoices();
-              })
+              }, function(err) {
+                if (err.status == 400) {
+                  this.loading = false;
+                  this.serverError= true;
+                  this.msg = "You have  enterd the invalid Brand Code ";
+                  alert("404 :"+this.msg);
+                }
+              }  
+              
+              
+              
+              )
               .catch((err) => {
                 this.loading = true;
                 console.log(err);
-              })
+              }
+              
+              
+              
+              )
         },
         updateInvoice: function() {
           this.loading = true;
