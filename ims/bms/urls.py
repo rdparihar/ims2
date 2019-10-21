@@ -14,6 +14,11 @@ urlpatterns = [
     path('home/<int:pk>', views.AdminDetailsView.as_view(), name='admin-detail'),
     path('shop/', views.ShopListView.as_view(), name='shop'),
     path('shop/<int:pk>', views.ShopDetailView.as_view(), name='stock-detail'),
+    path('closing/', views.StockClosingView.as_view(), name='stock-closing'),
+    path('purchase/', views.StockPurchaseView.as_view(), name='stock-purchase'),
+    path('shifting/', views.StockClosingView.as_view(), name='stock-shifting'),
+
+    
     # path('shop/', TemplateView.as_view(template_name='shop.html'), name="shop"),
    # path('invoice/', TemplateView.as_view(template_name='invoices.html'), name="invoice"),
     path('quantity/', TemplateView.as_view(template_name='quantities.html'), name="quantity"),

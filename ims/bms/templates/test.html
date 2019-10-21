@@ -8,191 +8,65 @@
 
 <br>
  
-  
-
 <main role="main" class="container">
-
-
-    <div id="StockEntry" class="tab-pane active">
-      
-
-          <div class="my-3 p-3 bg-white rounded shadow-sm "style="box-shadow: 0px 4px 6px -2px #888888 !important;">
-              <div class="alert alert-warning alert-dismissible fade show" role="alert" v-if="serverError">
-                  <strong>Warning !</strong> ${ msg }.
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-
-                
-<tr v-for="(invoic, k) in Invoices" :key="k">
-    <td scope="row" class="trashIconContainer">
-        <i class="far fa-trash-alt" @click="deleteRow(k, invoic)"></i>
-    </td>
-    <td>
-        <input class="form-control" type="text" v-model="invoice.invoic_brand_qty" />
-    </td>
-    <td>
-        <input class="form-control" type="text" v-model="invoice.invoic_total" />
-    </td>
-
- </tr>  
- <button type='button' class="btn btn-info" @click="addNewRow">
-    <i class="fas fa-plus-circle"></i>
-    Add
-</button> 
-       
-        <div class=" " v-for="(invoice, k) in newInvoice" :key="k">
-
-            <form v-on:submit.prevent="addInvoice()">
-                <div class="row ">
-                    <div class="col">
-                        <label for="category_id">Category</label>
-                        <select v-model.number="newInvoice.category_id" name="newInvoice.category_id" class="form-control" @change="getBrands()">
-                          <option v-for="categ in categories" :value="categ.category_id">${categ.category_name} </option>   
-                        </select>
-                    </div>
-                    <div class="col">
-                        <label for="brand_id">Brand</label>
-                        <select v-model.number="newInvoice.brand_id" name="newInvoice.brand_id"
-                          class="form-control" @change="getRates()">
-                          <option  v-for="brand in brands" :value="brand.brand_id">${brand.brand_name}</option>
-                        </select>
-                    </div>
-                    <div class="col ">
-                        <label for="brand_id">Brand Code</label>
-                        <input
-                        type="text"
-                        id="brand_id"
-                        class="form-control"
-                        v-model.number="newInvoice.brand_id" 
-                        name="newInvoice.brand_id"
-                        placeholder="Enter Brand Code"
-                        required="required"
-                        value=""
-                        rows="3" @change="getRatesb()">
-                    </div>
-                  </div>
-
-                <br>
-
-            <div class="row form-inline ">
-
-                    
-                     
-                      <div class="col">
-                          <label for="invoice_brand_size">Brand Size</label>
-                          <select name="newInvoice.invoice_brand_size" class="form-control" v-model="newInvoice.invoice_brand_size"
-                          name="newInvoice.invoice_brand_size" @change="calBottle()">
-                          <option v-for="bsize in brandsSize"  :value="bsize.quantity_name">
-                              ${bsize.quantity_name} - ${bsize.quantity_bottles}
-                          </option>
-                          </select>
-                          
-                          
-                      </div>
-                      
-                      <div class="col">
-                          <label for="invoice_brand_qty">Brand Qty</label>
-                          <input
-                          type="text"
-                          id="invoice_brand_qty"
-                          class="form-control"
-                          name="newInvoice.invoice_brand_qty"
-                          placeholder="Brand Qty"
-                          v-model="newInvoice.invoice_brand_qty"
-                          required="required"
-                          rows="3" @change="calBottle()">
-                      </div>
-                      <div class="col">
-                          <label for="invoice_rate_per_case">Brand Rate </label>
-                          <input
-                          type="text"
-                          id="invoice_rate_per_case"
-                          class="form-control"
-                          value="rate"
-                          name="newInvoice.invoice_rate_per_case"
-                          v-model="newInvoice.invoice_rate_per_case"
-                          rows="3" readonly>
-                      </div>
-                      <div class="col">
-                          <label for="invoice_no_of_cases">Cases</label>
-                          <input
-                          type="text"
-                          id="invoice_no_of_cases"
-                          class="form-control"
-                          placeholder="No.of case"
-                          name="newInvoice.invoice_no_of_cases"
-
-                          v-model="newInvoice.invoice_no_of_cases"
-                          required="required"
-                          rows="3" readonly>
-                      </div>
-                      <div class="col">
-                          <label for="invoice_total">Total</label>
-                          <input
-                          type="text"
-                          id="invoice_total"
-                          placeholder="Total"
-                          class="form-control"
-                          name="newInvoice.invoice_total"
-                          v-model="newInvoice.invoice_total"
-                          required="required"
-                          rows="3" readonly>
-                      </div>
-                  </div>
-                  
-                <br>
-                  <div class="modal-footer">
-                      <button type="submit" class="btn btn-primary">Save changes</button>
-                  </div>
-              </form>
-        </div>
-          <!-- <button type='button' class="btn btn-light disabled" @click="addNewRow">
-              <i class="fas fa-plus"></i>
-              Add
-          </button> -->
-          </div>
-          <div class="my-3 p-3 bg-white rounded shadow-rd">
-              
-    
-         
-
-
-  <INPUT type="button" class="btn btn-secondary" value="Add Row" onclick="addRow('dataTable')" />
-  <INPUT type="button" class="btn btn-secondary" value="Delete Row" onclick="deleteRow('dataTable')" />
-
-<br>
-
-          <form action="" method="post" enctype="multipart/form-data">
-
-  
-          <TABLE id="dataTable" width="350px" border="1" style="border-collapse:collapse;">
-          <TR>
-          <TH>Select</TH>
-          <TH>Sr. No.</TH>
-          <TH>Item</TH>
-          <TH>Qty</TH>
-          <TH>Cost</TH>
-
-          <TH formula="cost*qty"summary="sum">Price</TH>
-          </TR>
-                  <TR>
-                      <TD><INPUT type="checkbox" name="chk[]"/></TD>
-                      <TD> 1 </TD>
-                      <TD> <INPUT type="text" name="item[] "/> </TD>
-
-                      <TD> <INPUT type="text" id="qty1" name="qty[]"/> </TD>
-                      <TD> <INPUT type="text" id="cost1" name="cost[]" /> </TD>
-                      <TD> <INPUT type="text" id="price1" name="price[]" /> </TD>
-                  </TR>
-  
-              </TABLE>
-              total: <input type="text"  readonly="readonly" id="total" /><br/>
-              <input type="button" class="btn btn-success" value="Total" onclick="totalIt()" /> 
-              <input class="btn btn-secondary" type="submit" />
+  <div id="StockEntry" class="tab-pane active">
+    <!-- <div class="my-3 p-3 bg-white rounded shadow-rd">
+      <input type="button" class="btn btn-secondary" value="Add Row" onclick="addRow('dataTable')" />
+      <input type="button" class="btn btn-secondary" value="Delete Row" onclick="deleteRow('dataTable')" /><br>
+      <form action="" method="post" enctype="multipart/form-data">
+        <table id="dataTable" width="350px"  style="border-collapse:collapse;">
+          <tr>
+            <th>Select</th>
+            <th>Sr. No.</th>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Cost</th>
+            <th formula="cost*qty"summary="sum">Price</th>
+          </tr>
+          <tr>
+            <td><input type="checkbox" name="chk[]"/></td>
+            <td> 1 </td>
+            <td> <input type="text" name="item[] "/> </td>
+            <td> <input type="text" id="qty1" name="qty[]"/> </td>
+            <td> <input type="text" id="cost1" name="cost[]" /> </td>
+            <td> <input type="text" id="price1" name="price[]" /> </td>
+          </tr>
+        </table>
+        total: <input type="text"  readonly="readonly" id="total" />
+        <input type="button" class="btn btn-success" value="Total" onclick="totalIt()" /> 
+        <input class="btn btn-secondary" type="submit" />
    </form>
   
+    </div> -->
+    <!-- here is the another form for the dynamic data  creation to the form data insertion -->
+    <div class="my-3 p-3 bg-white rounded shadow-rd">
+        <input type="button" class="btn btn-secondary" value="Add Row" onclick="addRow('dataTable2')" />
+        <input type="button" class="btn btn-secondary" value="Delete Row" onclick="deleteRow('dataTable2')" /><br>
+        <form action="" method="post" enctype="multipart/form-data">
+          <table id="dataTable2" width="350px"  style="border-collapse:collapse;">
+            <tr>
+              <th>Select</th>
+              <th>Sr. No.</th>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Cost</th>
+              <th formula="cost*qty" summary="sum">Price</th>
+            </tr>
+            <tr>
+              <td><input type="checkbox" name="chk[]"/></td>
+              <td> 1 </td>
+              <td> <input type="text" name="item[] "/> </td>
+              <td> <input type="text" id="qty1" name="qty[]"/> </td>
+              <td> <input type="text" id="cost1" name="cost[]" /> </td>
+              <td> <input type="text" id="price1" name="price[]" /> </td>
+            </tr>
+          </table>
+          total: <input type="text"  readonly="readonly" id="total" />
+          <input type="button" class="btn btn-success" value="Total" onclick="totalIt()" /> 
+          <input class="btn btn-secondary" type="submit" />
+     </form>
+    
+      </div>
   </div>
   </main>
   
@@ -213,7 +87,6 @@
       el: '#StockEntry',
       delimiters: ['${','}'],
       data: {
-        invoices: [],
         brands:[],
         brandsSize:[],
         categories:[],
@@ -224,12 +97,7 @@
         currentInvoice: {},
         message: null,
         rows: [],
-        Invoices:[ {            
-            invoice_brand_qty: '',
-           
-            invoice_total: 0
-
-        }],
+        invoices:[ { }],
         newInvoice:{   
             "shop_id": null,
             "brand_id": null,
@@ -267,7 +135,7 @@
 
       methods: {
         addNewRow() {
-            this.Invoices.push({
+            this.invoices.push({
                 product_no: '',
                 product_name: '',
                 product_price: '',
@@ -495,111 +363,111 @@
  
   
   
-//    document.onkeyup = function(e) {
-//   if (e.ctrlKey && e.which == 81) {
-//     addRow('dataTable');
+   document.onkeyup = function(e) {
+  if (e.ctrlKey && e.which == 81) {
+    addRow('dataTable');
 
-//   } 
-// };
+  } 
+};
 
   
-//   function calc(idx) {
-//     var price = parseFloat(document.getElementById("cost"+idx).value)*
-//                 parseFloat(document.getElementById("qty"+idx).value);
-//     //  alert(idx+":"+price);  
-//     document.getElementById("price"+idx).value= isNaN(price)?"0.00":price.toFixed(2);
+  function calc(idx) {
+    var price = parseFloat(document.getElementById("cost"+idx).value)*
+                parseFloat(document.getElementById("qty"+idx).value);
+    //  alert(idx+":"+price);  
+    document.getElementById("price"+idx).value= isNaN(price)?"0.00":price.toFixed(2);
      
-//   }
+  }
   
-//   function totalIt() {
-//     var qtys = document.getElementsByName("qty[]");
-//     var total=0;
-//     for (var i=1;i<=qtys.length;i++) {
-//       calc(i);  
-//       var price = parseFloat(document.getElementById("price"+i).value);
-//       total += isNaN(price)?0:price;
-//     }
-//     document.getElementById("total").value=isNaN(total)?"0.00":total.toFixed(2);                        
-//   }      
+  function totalIt() {
+    var qtys = document.getElementsByName("qty[]");
+    var total=0;
+    for (var i=1;i<=qtys.length;i++) {
+      calc(i);  
+      var price = parseFloat(document.getElementById("price"+i).value);
+      total += isNaN(price)?0:price;
+    }
+    document.getElementById("total").value=isNaN(total)?"0.00":total.toFixed(2);                        
+  }      
   
-//   window.onload=function() {
-//     document.getElementsByName("qty[]")[0].onkeyup=function() {calc(1)};
-//     document.getElementsByName("cost[]")[0].onkeyup=function() {calc(1)};
-//   }
+  window.onload=function() {
+    document.getElementsByName("qty[]")[0].onkeyup=function() {calc(1)};
+    document.getElementsByName("cost[]")[0].onkeyup=function() {calc(1)};
+  }
   
 
  
-//   var rowCount =0;
-//       function addRow(tableID) {
+  var rowCount =0;
+      function addRow(tableID) {
   
-//           var table = document.getElementById(tableID);
+          var table = document.getElementById(tableID);
   
-//           var rowCount = table.rows.length;
-//           var row = table.insertRow(rowCount);
+          var rowCount = table.rows.length;
+          var row = table.insertRow(rowCount);
   
-//           var cell1 = row.insertCell(0);
-//           var element1 = document.createElement("input");
-//           element1.type = "checkbox";
-//           element1.name = "chk[]";
-//           cell1.appendChild(element1);
+          var cell1 = row.insertCell(0);
+          var element1 = document.createElement("input");
+          element1.type = "checkbox";
+          element1.name = "chk[]";
+          cell1.appendChild(element1);
   
-//           var cell2 = row.insertCell(1);
-//           cell2.innerHTML = rowCount;
+          var cell2 = row.insertCell(1);
+          cell2.innerHTML = rowCount;
   
-//           var cell3 = row.insertCell(2);
-//           var element3 = document.createElement("input");
-//           element3.type = "text";
-//           element3.name = "item[]";
-//           element3.required = "required";
-//           cell3.appendChild(element3);
+          var cell3 = row.insertCell(2);
+          var element3 = document.createElement("input");
+          element3.type = "text";
+          element3.name = "item[]";
+          element3.required = "required";
+          cell3.appendChild(element3);
   
-//           var cell4 = row.insertCell(3);
-//           var element4 = document.createElement("input");
-//           element4.type = "text";
-//           element4.name = "qty[]";
-//           element4.id = "qty"+rowCount;
-//           element4.onkeyup=function() {calc(rowCount);}
-//           cell4.appendChild(element4);
+          var cell4 = row.insertCell(3);
+          var element4 = document.createElement("input");
+          element4.type = "text";
+          element4.name = "qty[]";
+          element4.id = "qty"+rowCount;
+          element4.onkeyup=function() {calc(rowCount);}
+          cell4.appendChild(element4);
   
-//           var cell5 = row.insertCell(4);
-//           var element5 = document.createElement("input");
-//           element5.type = "text";
-//           element5.name = "cost[]";
-//           element5.id = "cost"+rowCount;
-//           element5.onkeyup=function() {calc(rowCount);}
-//           cell5.appendChild(element5);
+          var cell5 = row.insertCell(4);
+          var element5 = document.createElement("input");
+          element5.type = "text";
+          element5.name = "cost[]";
+          element5.id = "cost"+rowCount;
+          element5.onkeyup=function() {calc(rowCount);}
+          cell5.appendChild(element5);
   
-//           var cell6 = row.insertCell(5);
-//           var element6 = document.createElement("input");
-//           element6.type = "text";
-//           element6.name = "price[]";
-//           element6.id = "price"+rowCount
-//           cell6.appendChild(element6);
-  
-  
-  
-//       }
-  
-//       function deleteRow(tableID) {
-//           try {
-//           var table = document.getElementById(tableID);
-//           var rowCount = table.rows.length;
-  
-//           for(var i=0; i<rowCount; i++) {
-//               var row = table.rows[i];
-//               var chkbox = row.cells[0].childNodes[0];
-//               if(null != chkbox && true == chkbox.checked) {
-//                   table.deleteRow(i);
-//                   rowCount--;
-//                   i--;
-//               }
+          var cell6 = row.insertCell(5);
+          var element6 = document.createElement("input");
+          element6.type = "text";
+          element6.name = "price[]";
+          element6.id = "price"+rowCount
+          cell6.appendChild(element6);
   
   
-//           }
-//           }catch(e) {
-//               alert(e);
-//           }
-//       }
+  
+      }
+  
+      function deleteRow(tableID) {
+          try {
+          var table = document.getElementById(tableID);
+          var rowCount = table.rows.length;
+  
+          for(var i=0; i<rowCount; i++) {
+              var row = table.rows[i];
+              var chkbox = row.cells[0].childNodes[0];
+              if(null != chkbox && true == chkbox.checked) {
+                  table.deleteRow(i);
+                  rowCount--;
+                  i--;
+              }
+  
+  
+          }
+          }catch(e) {
+              alert(e);
+          }
+      }
     
     </script>
    

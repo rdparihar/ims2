@@ -5,7 +5,9 @@
         </button>
 
         <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+            
             <div class="navbar-nav navbar-header">
+                    {% if user.is_authenticated %}
                 <!-- <a href="{% url 'home' %}" class="nav-item nav-link">Home</a> -->
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Main</a>
@@ -22,12 +24,12 @@
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Receipts</a>
                     <div class="dropdown-menu">
-                        <a href="#" class="dropdown-item">Stock Purchase</a>
-                        <a href="#" class="dropdown-item">Stock Shifting</a>
+                        <a href="{% url 'stock-purchase' %}" class="dropdown-item">Stock Purchase</a>
+                        <a href="{% url 'stock-closing' %}" class="dropdown-item">Stock Shifting</a>
                       
                     </div>
                 </div>
-                <a href="#" class="nav-item nav-link">Closing</a>
+                <a href="{% url 'stock-closing' %}" class="nav-item nav-link">Closing</a>
                 <a href="#" class="nav-item nav-link">Partners</a>
                 <a href="#" class="nav-item nav-link">Expenses</a>
                  <div class="nav-item dropdown">
@@ -39,7 +41,7 @@
                       
                     </div>
                 </div>
-                            
+                {% endif %}          
             </div>
             
             <div class="navbar-nav">

@@ -1,0 +1,632 @@
+
+<!DOCTYPE html>
+{% load static %}
+{% include 'head.html' %}
+
+<body class="bg-light">
+    {% include 'topnavbar.html' %}
+      
+  
+          <main role="main" class="container">
+              
+
+                  <!-- <ul class="breadcrumb">
+                      <li class="breadcrumb-item"><a href="#">Home</a></li>
+                      <li class="breadcrumb-item"><a href="#"> 2017</a></li>
+                  
+                    </ul> -->
+              
+                
+                  
+        {% if user.is_authenticated %}
+           
+             
+                                
+                
+
+
+                <div id="StockClosing" >
+
+                    
+                        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-rd">
+                            <div class="lh-100 text-white">
+                                <h6>Stock Closing</h6>
+                            </div>
+                          
+                        </div>
+                        <div class="mb-5 p-1 bg-white rounded shadow-rd">
+                        <div class="modal-body closing-box ">
+                            <form v-on:submit.prevent="addClosing()" id="cl_frm">
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="close_date">Enter the Date</label>
+                                        <input
+                                            type="date"
+                                            name="newClosing.close_date"
+                                            class="form-control"
+                                            id="close_date"
+                                            placeholder="Enter the Date"
+                                            v-model="newClosing.close_date"
+                                            required="required" >
+                                    </div>
+                                    {% if shop_list %}
+                                    <div class="col">
+                                      <label for="shop_id">Shop</label>
+                                      <select  v-model.number="newClosing.shop_id" name="newClosing.shop_id" class="form-control" @change="getShops()">
+                                          {% for shop in shop_list %}
+                                      <option value="{{ shop.shop_id }}">{{shop.shop_name}}</option> 
+                                      {% endfor %}  
+                                      </select>
+                                   </div>
+                                  {% else %}
+                                  <div class="col">
+                                      <label for="shop_id">Shop</label>
+
+                                  <input class="form-control " type="text" placeholder="Shop" readonly>  
+                                  </div>
+                                 
+                                  {% endif %}
+                                     
+                                    <div class="col">
+                                        <label for="category_id">Category</label>
+                                        <select v-model.number="newClosing.category_id" name="newClosing.category_id" class="form-control" @change="getBrands()">
+                                        <option v-for="categ in categories" :value="categ.category_id">${categ.category_name} </option>   
+                                        </select>
+                                    </div>
+                                    <div class="col border-right gray">
+                                        <label for="brand_id">Brand</label>
+                                
+                                        <select v-model.number="newClosing.brand_id" name="newClosing.brand_id"
+                                        class="form-control" @change="getShiftData()">
+                                        <option  v-for="brand in brands" :value="brand.brand_id">${brand.brand_name}</option>
+                                        </select>
+                                    </div>
+                                    <div class="">
+                                        <div class="col">
+                                            <label for="invoice_brand_id">Brand Code</label>
+                                            <input
+                                            type="text"
+                                            id="brand_id"
+                                            class="form-control"
+                                            v-model.number="newClosing.brand_id" 
+                                            name="newClosing.brand_id"
+                                            placeholder="Enter Brand Code"
+                                            required="required"
+                                            value=""
+                                            rows="3" @change="getShiftData()">
+                                        </div>
+                                    </div>
+
+                                        </li>
+                                      </ul> 
+
+
+                                      
+                                </div>
+<br>                                
+                                
+                                <div class="row">
+                                      <div class="table-responsive">
+                                          <table class="table table-hover">
+                                              <thead>
+                                                  <tr>
+                                                      <th scope="col">Qty</th>                          
+                                                      <th scope="col">Opening</th>
+                                                      <th scope="col">Reciepts</th>                           
+                                                      <th scope="col">Given</th> 
+                                                      <th scope="col">Taken </th> 
+                                                      <th scope="col">Closing</th> 
+                                                      <th scope="col">Sold</th>
+                                                      <th scope="col">Total</th>  
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                 <tr>
+                                                      <th scope="row"> P  - ${ brandsSize.P  }</th>
+                                                      <td>${ op_stk_data.open_p }</td>
+                                                      <td>${ in_stk_data.P}</td>
+                                                        <td>${ shift_given.stock_shift_p } </td>
+                                                        <td>${ shift_taken.stock_shift_p} </td>
+
+                                                        <td><input
+                                                          type="number"
+                                                          name="newClosing.close_qty_p"
+                                                          class="form-control"
+                                                          id="close_qty_p"
+                                                          placeholder="Enter Closing Qty"
+                                                          v-model="newClosing.close_qty_p"
+                                                          ></td>
+                                                        <td> ${ sold_p}</td>
+                                                        <td> ${ total_p}</td>
+                                                      </tr>
+                                                      <tr> 
+                                                         <th scope="row"> Q  - ${ brandsSize.Q  }</th>
+                                                          <td>${ op_stk_data.open_q }</td>
+                                                          <td>${ in_stk_data.Q}</td>
+                                                          <td>${ shift_given.stock_shift_q }</td>
+                                                          <td>${ shift_taken.stock_shift_q} </td>
+                                                          <td>
+                                                            <input type="number" name="newClosing.close_qty_q" 
+                                                          class="form-control" id="close_qty_q" placeholder="Enter Closing Qty"
+                                                          v-model="newClosing.close_qty_q"></td>         
+                                                          <td> ${ sold_q}</td>
+                                                          <td> ${ total_q}</td>
+                                                      </tr>
+                                                      <tr>                                                          
+                                                          <th scope="row"> N  - ${ brandsSize.N  }</th>
+                                                          <td>${ op_stk_data.open_n }</td>
+                                                          <td>${ in_stk_data.N}</td>
+                                                          <td>${ shift_given.stock_shift_n }</td>
+                                                          <td>${ shift_taken.stock_shift_n} </td>
+                                                          <td>
+                                                            <input type="number" 
+                                                            name="newClosing.close_qty_n" class="form-control"
+                                                            id="close_qty_n" placeholder="Enter Closing Qty"
+                                                            v-model="newClosing.close_qty_n" >
+                                                          </td>            
+                                                          <td> ${ sold_n}</td>
+                                                          <td> ${ total_n}</td>
+              
+                                                      </tr>
+
+                                                      <tr>                                                          
+                                                          <th scope="row"> XG  - ${ brandsSize.XG  }</th>
+                                                          <td>${ op_stk_data.open_xg }</td>
+                                                          <td>${ in_stk_data.XG}</td>
+                                                          <td>${ shift_given.stock_shift_xg }</td>
+                                                          <td>${ shift_taken.stock_shift_xg} </td>
+                                                          <td>
+                                                            <input type="number" 
+                                                            name="newClosing.close_qty_xg" class="form-control"
+                                                            id="close_qty_xg" placeholder="Enter Closing Qty"
+                                                            v-model="newClosing.close_qty_xg" >
+                                                          </td>            
+                                                          <td> ${ sold_xg}</td>
+                                                          <td> ${ total_xg}</td>
+              
+                                                      </tr>
+
+                                                      <tr>                                                          
+                                                          <th scope="row"> L  - ${ brandsSize.L  }</th>
+                                                          <td>${ op_stk_data.open_l }</td>
+                                                          <td>${ in_stk_data.L}</td>
+                                                          <td>${ shift_given.stock_shift_l }</td>
+                                                          <td>${ shift_taken.stock_shift_l} </td>
+                                                          <td>
+                                                            <input type="number" 
+                                                            name="newClosing.close_qty_l" class="form-control"
+                                                            id="close_qty_l" placeholder="Enter Closing Qty"
+                                                            v-model="newClosing.close_qty_l" >
+                                                          </td>            
+                                                          <td> ${ sold_l}</td>
+                                                          <td> ${ total_l}</td>
+              
+                                                      </tr>
+
+                                                      <tr>                                                          
+                                                          <th scope="row"> D  - ${ brandsSize.D  }</th>
+                                                          <td>${ op_stk_data.open_d }</td>
+                                                          <td>${ in_stk_data.D}</td>
+                                                          <td>${ shift_given.stock_shift_d }</td>
+                                                          <td>${ shift_taken.stock_shift_d} </td>
+                                                          <td>
+                                                            <input type="number" 
+                                                            name="newClosing.close_qty_d" class="form-control"
+                                                            id="close_qty_d" placeholder="Enter Closing Qty"
+                                                            v-model="newClosing.close_qty_d" >
+                                                          </td>            
+                                                          <td> ${ sold_d}</td>
+                                                          <td> ${ total_d}</td>
+              
+                                                      </tr>
+
+                                                      <tr>                                                          
+                                                          <th scope="row"> Y  - ${ brandsSize.Y  }</th>
+                                                          <td>${ op_stk_data.open_y}</td>
+                                                          <td>${ in_stk_data.Y}</td>
+                                                          <td>${ shift_given.stock_shift_y }</td>
+                                                          <td>${ shift_taken.stock_shift_y} </td>
+                                                          <td>
+                                                            <input type="number" 
+                                                            name="newClosing.close_qty_y" class="form-control"
+                                                            id="close_qty_y" placeholder="Enter Closing Qty"
+                                                            v-model="newClosing.close_qty_y" >
+                                                          </td>            
+                                                          <td> ${ sold_y}</td>
+                                                          <td> ${ total_y}</td>
+              
+                                                      </tr>
+    
+                                                </tbody>
+    
+                                           
+                                            
+    
+                                          </table>
+                                </div>
+                                </div>
+                                 
+
+                                    <div class="modal-footer">
+                              
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                
+                            
+                            </form>
+                        </div>
+                    
+                                    
+                </div>
+            </div>
+                <!-- End of the Stock Closing Block -->
+
+        </div>
+          </main>
+          {% endif %}
+                  </div>
+              </div>
+    
+
+  <!-- bootrtap js files -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+ <!-- Icons -->
+ <script src="{% static 'js/vendor/feather.min.js' %}"></script>
+  <script>
+    feather.replace()
+  </script>
+  <!-- vue.js files -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+  <script type="text/javascript">
+    Vue.http.headers.common['X-CSRFToken'] = "{{ csrf_token }}";
+    
+
+    var myClosing =  new Vue({
+      el: '#StockClosing',
+      delimiters: ['${','}'],
+      data: {
+        
+        brands:[],
+        shops:[],
+        shifts:[],
+        shift_given:{ "stock_shift_p": 0, "stock_shift_q": 0, "stock_shift_n": 0, "stock_shift_d": 0, "stock_shift_l": 0, "stock_shift_xg": 0, "stock_shift_y": 0
+ },
+        shift_taken:{ "stock_shift_p": 0, "stock_shift_q": 0, "stock_shift_n": 0, "stock_shift_d": 0, "stock_shift_l": 0, "stock_shift_xg": 0, "stock_shift_y": 0
+ },
+       
+        brandsSize:[],
+        categories:[],
+        op_stk_data:{"open_p": 0, "open_q": 0, "open_n": 0, 'open_l': 0, 'open_y': 0, 'open_xg': 0, 'open_d': 0 },
+        in_stk_data:{"P": 0, "Q": 0, "N": 0, "L": 0, "Y": 0, "XG": 0 , "D": 0,},
+        brnd_details: { "brand_p_sale": 0, "brand_q_sale": 0, "brand_n_sale": 0, "brand_d_sale": 0, "brand_l_sale": 0, "brand_xg_sale": 0, "brand_y_sale": 0 },
+        invoices:[],
+        loading: true,
+        rate: 00,
+        currentInvoice: {},
+        message: null,
+        newInvoice: { 'invoice_transaction_id': null, 'invoice_brand_size': null, 'invoice_rate_per_case':null },
+        newClosing: {
+          'brand_id': null, 'category_id': null, 'close_shop_id': null, 'close_date': null, 'close_qty_p': 0, 
+          'close_qty_q': 0, 'close_qty_n': 0, 'close_qty_d': 0,'close_qty_l': 0, 'close_qty_xg': 0,   
+          'close_qty_y': 0, 'close_sale_p': 0,'close_sale_q': 0, 'close_sale_n': 0, 'close_sale_d': 0, 'close_sale_l': 0,
+          'close_sale_xg': 0,    'close_sale_y': 0,'total_sale': 0
+          },
+        newOpening: {
+                    'brand_id': null, 'open_shop_id': null, 'open_date': null, 'open_p': 0, 
+                    'open_q': 0, 'open_n': 0, 'open_d': 0,'open_l': 0, 'open_xg': 0,   
+                    'open_y': 0,
+          },
+        search_term: '',
+      },
+      mounted: function() {
+          this.getCategories();
+          this.getBrands();
+          // this.getShops();
+          this.getBrandsSize();
+          // this.getInvoicesd();
+          // this.getShiftData();
+          // this.getOpenData();
+      },
+      computed: {
+        sold_p() {
+          return (parseInt(this.op_stk_data.open_p) + parseInt(this.in_stk_data.P)  + parseInt(this.shift_taken.stock_shift_p) - parseInt(this.shift_given.stock_shift_p) - parseInt(this.newClosing.close_qty_p)) || 0;
+        },
+        total_p() {
+          return (parseInt(this.sold_p) * parseInt(this.brnd_details.brand_p_cost)) || 0;
+        },
+        sold_q() {
+          return (parseInt(this.op_stk_data.open_q) + parseInt(this.in_stk_data.Q)  + parseInt(this.shift_taken.stock_shift_q) - parseInt(this.shift_given.stock_shift_q) - parseInt(this.newClosing.close_qty_q)) || 0;
+        },
+        total_q() {
+          console.log("Q",this.brnd_details.brand_q_cost);
+          return (parseInt(this.sold_q) * parseInt(this.brnd_details.brand_q_cost)) || 0 ;
+        },
+        sold_n() {
+          return (parseInt(this.op_stk_data.open_n) + parseInt(this.in_stk_data.N)  + parseInt(this.shift_taken.stock_shift_n) - parseInt(this.shift_given.stock_shift_n) - parseInt(this.newClosing.close_qty_n)) || 0;
+        },
+        total_n() {
+          return (parseInt(this.sold_n) * parseInt(this.brnd_details.brand_n_cost)) || 0;
+        },
+        
+        sold_l() {
+          return (parseInt(this.op_stk_data.open_l) + parseInt(this.in_stk_data.L)  + parseInt(this.shift_taken.stock_shift_l) - parseInt(this.shift_given.stock_shift_l) - parseInt(this.newClosing.close_qty_l)) || 0;
+        },
+        total_l() {
+          return (parseInt(this.sold_l) * parseInt(this.brnd_details.brand_l_cost)) || 0;
+        },
+        
+        sold_d() {
+          return (parseInt(this.op_stk_data.open_d) + parseInt(this.in_stk_data.D)  + parseInt(this.shift_taken.stock_shift_d) - parseInt(this.shift_given.stock_shift_d) - parseInt(this.newClosing.close_qty_d)) || 0;
+        },
+        total_d() {
+          return (parseInt(this.sold_d) * parseInt(this.brnd_details.brand_d_cost)) || 0;
+        },
+        
+        sold_xg() {
+          return (parseInt(this.op_stk_data.open_xg) + parseInt(this.in_stk_data.XG)  + parseInt(this.shift_taken.stock_shift_xg) - parseInt(this.shift_given.stock_shift_xg) - parseInt(this.newClosing.close_qty_xg)) || 0;
+        },
+        total_xg() {
+          return (parseInt(this.sold_xg) * parseInt(this.brnd_details.brand_xg_cost)) || 0;
+        },
+        
+        sold_y() {
+          return (parseInt(this.op_stk_data.open_y) + parseInt(this.in_stk_data.Y)  + parseInt(this.shift_taken.stock_shift_y) - parseInt(this.shift_given.stock_shift_y) - parseInt(this.newClosing.close_qty_y)) || 0;
+        },
+        total_y() {
+          return (parseInt(this.sold_y) * parseInt(this.brnd_details.brand_y_cost)) || 0;
+        },
+      
+    },
+  
+      methods: {
+        getCategories: function() {
+          let api_url = '/api/category/';
+          this.$http.get(api_url)
+          .then((response) => {
+            this.categories = response.data;
+            })
+          .catch((err) => {
+            console.log(err);
+            })  
+        },
+        getBrands: function (){
+          let api_url = '/api/brand/';
+          api_url = `/api/brand/?search=${this.newClosing.category_id}`;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.brands = response.data;
+                
+                this.loading = false;
+                
+              
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        },
+        getShops: function() {
+              let api_url = '/api/shop/';
+              this.loading = true;
+              this.$http.get(api_url)
+              .then((response) => {
+                  this.shops = response.data;
+                  this.loading = false;
+              })
+              .catch((err) => {
+                  this.loading = false;
+                  console.log(err);
+                })
+            },
+        
+        addClosing: function() {
+          this.newClosing['close_shop_id'] = this.newClosing.shop_id;
+          this.loading = true;
+          this.$http.post(`/api/close/`,this.newClosing)
+          .then((response) => {
+            this.loading = true;
+            this.addOpening();
+            }, function(err) {
+                if (err.status == 400) {
+                  this.loading = false;
+                  this.serverError= true;
+                  this.msg = "No Shop selected";
+                  alert("400 :"+this.msg);
+                }
+              }  
+            
+            )
+          .catch((err) => {
+            this.loading = true;
+            console.log(err);
+          })
+        },
+        addOpening: function() {
+          var date = new Date(this.newClosing.close_date);
+          date.setDate(date.getDate() + 1);
+          this.newOpening['open_date'] = date.toJSON().slice(0,10);
+          this.newOpening['brand_id'] = this.newClosing['brand_id']  ;
+          this.newOpening['open_shop_id'] =  this.newClosing['close_shop_id']  ;
+          this.newOpening['open_p'] =  this.newClosing['close_qty_p']  ;
+          this.newOpening['open_q'] =  this.newClosing['close_qty_q']  ;
+          this.newOpening['open_n'] =  this.newClosing['close_qty_n']  ;
+          this.newOpening['open_d'] =  this.newClosing['close_qty_d']  ;
+          this.newOpening['open_l'] =  this.newClosing['close_qty_l']  ;
+          this.newOpening['open_xg'] =  this.newClosing['close_qty_xg']  ;
+          this.newOpening['open_y'] =  this.newClosing['close_qty_y']  ;
+
+                this.loading = true;
+                this.$http.post(`/api/open/`,this.newOpening)
+                .then((response) => {
+                    this.loading = true;
+                    location.reload();
+                })
+                .catch((err) => {
+                    this.loading = true;
+                    console.log(err);
+                })
+        },
+        getBrandsSize: function (){
+          let api_url = '/api/quantity/';
+          this.loading = true;
+          this.$http.get(api_url)
+          .then((response) => {
+            this.brandsSize = response.data;
+            var result = {};
+            for (var i = 0; i < this.brandsSize.length; i++) {
+              result[this.brandsSize[i].quantity_name] = this.brandsSize[i].quantity_bottles;
+            }
+            console.log("some:"+result);
+            this.brandsSize = result;
+            this.loading = false;
+          })
+          .catch((err) => {
+            this.loading = false;
+            console.log(err);
+          })
+        },
+       
+        getOpenData: function(){
+          let api_url = '/api/open/';
+          api_url = `/api/open/?search=${this.newClosing.brand_id}`;
+         // let shop_id = {{shop.shop_id}} ;
+          let api_urlx = `/api/open/?open_shop_id=${this.newClosing.shop_id}&open_date=${this.newClosing.close_date}&brand_id=${this.newClosing.brand_id}`
+          this.loading = true;
+          this.$http.get(api_urlx)
+              .then((response) => {
+                
+                let op_data = response.data;
+                console.log(op_data); 
+                console.log(api_urlx);
+                if (op_data.length > 0){
+                  this.op_stk_data = op_data[0];
+                }
+                else{
+                  this.op_stk_data = this.op_stk_data;
+                }
+                
+                // let op_stk_filt = this.op_stk_data.find(u => (new Date (Date.parse(u.open_date))).toISOString().slice(0,10) === this.newClosing.close_date &&	u.open_shop_id === {{shop.shop_id}}) ||0 ;
+                
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+
+
+        },
+    
+        getInvoicesd: function () {
+          var local = new Date();
+          dt = local.toJSON().slice(0,10);
+          //let shop_id = {{shop.shop_id}} ;
+          console.log(dt)
+          let api_url = `/api/invoice/?shop_id=${this.newClosing.shop_id}&invoice_date=${this.newClosing.close_date}&brand_id=${this.newClosing.brand_id}`
+          this.loading = true;
+          this.$http.get(api_url)
+          .then((response) => 
+          {
+            console.log("invoice: ", api_url)
+            let dtx = response.data;
+            if (dtx.length >0)
+            {
+              // first, convert data into a Map with reduce
+              let counts = dtx.reduce((prev, curr) => {
+              let count = prev.get(curr.invoice_brand_size) || 0;
+              prev.set(curr.invoice_brand_size, curr.invoice_no_of_cases + count);
+              return prev;
+              },
+              new Map());
+              // then, map your counts object back to an array
+              let reducedObjArr = [...counts].map(([invoice_brand_size, invoice_no_of_cases]) => {
+              return {invoice_brand_size, invoice_no_of_cases}
+              })
+              var result = {};
+              for (var i = 0; i < reducedObjArr.length; i++) 
+              {
+                result[reducedObjArr[i].invoice_brand_size] = reducedObjArr[i].invoice_no_of_cases;
+              }
+              console.log(result);
+              //this.in_stk_data = result;
+              update(this.in_stk_data, result);
+              function update (targetObject, obj) {
+                Object.keys(obj).forEach(function (key) {
+                  if ( 'object' === typeof obj[key] && !Array.isArray(obj[key]) ) {
+                    update(targetObject[key], obj[key])
+                  }
+                  else if ( 'string' === typeof obj[key] || 'number' === typeof obj[key] ) {
+                    targetObject[key] = obj[key]
+                  }
+                })
+              }
+              console.log(this.in_stk_data);
+              this.loading = false;
+            }
+          })
+          .catch((err) => {
+            this.loading = false;
+            console.log(err);
+          })
+        },
+       
+        getShiftData: function ()
+        {
+          let api_url = '/api/shift/';
+          // api_url = `/api/shift/?search=${this.newClosing.brand_id}`;
+          api_url = `/api/shift/?brand_id=${this.newClosing.brand_id}`;
+          this.loading = true;
+          this.$http.get(api_url)
+          .then((response) => {
+            console.log("Shift:", api_url);
+            let sft_data= response.data;
+            let sft_gvn = sft_data.find(u => (new Date (Date.parse(u.stock_shift_date))).toISOString().slice(0,10) === this.newClosing.close_date &&	u.stock_shift_from === this.newClosing.shop_id) ;
+            let sft_tkn = sft_data.find(u => (new Date (Date.parse(u.stock_shift_date))).toISOString().slice(0,10) === this.newClosing.close_date &&	u.stock_shift_to === this.newClosing.shop_id) ;
+            if (sft_gvn)
+            {
+              this.shift_given = sft_gvn;
+            }
+            if (sft_tkn){
+              this.shift_taken = sft_tkn;
+            }
+            this.getOpenData();
+            this.getInvoicesd();
+            this.getBrandDetail();
+            this.loading = false;
+            })
+            .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            })
+        },
+// this function is for the total to function
+        getBrandDetail: function()
+        {
+          let api_url = '/api/open/';
+          api_url = `/api/brand-detail/?brand_id=${this.newClosing.brand_id}`
+          this.loading = true;
+          this.$http.get(api_url)
+          .then((response) => {
+            let brnd_data = response.data;
+            console.log("brand data", brnd_data);
+            if (brnd_data.length > 0){
+              this.brnd_details = brnd_data[0];
+            }
+            this.loading = false;
+          })
+          .catch((err) => {
+            this.loading = false;
+            console.log(err);
+          })
+        },
+      
+      
+      }
+    });
+       
+  </script>
+  </body>
+</html>

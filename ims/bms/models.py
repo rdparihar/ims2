@@ -128,7 +128,8 @@ class Invoice(models.Model):
         verbose_name = 'invoice'
         verbose_name_plural = 'invoice'
         ordering = ["invoice_transaction_id"]
-        unique_together = ('brand_id', 'invoice_brand_size', 'invoice_date',)
+        unique_together = ('brand_id', 'shop_id','invoice_brand_size', 'invoice_date',)
+        # this won't work as this is a foregin key
 
     def __str__(self):
          return str(self.invoice_transaction_id)

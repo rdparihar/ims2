@@ -3,13 +3,36 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<h2>Login</h2>
 <form method="post">
   {% csrf_token %}
-  <div class="form-group pt-3 px-4 ">
-    {{ form.as_p }}
-  <button type="submit" class="btn btn-light">Login</button>
+  <div class="row  mt-5">
+    <!-- {{ form.as_p }} -->
+  <!-- <button type="submit" class="btn btn-light">Login</button> -->
 
+  <div class="col">
+  <div class="row py-5  px-4 ">
+        <div class="col py-5 px-4">
+            <div class="lh-100 text-dark-30 text-center">
+                <h5>Login</h5>
+                <br> 
+
+            </div>
+            <label for="id_username">Username:</label> <input type="text" class="form-control" name="username" autofocus="" required="" id="id_username">
+            <label for="id_password">Password:</label> <input type="password" class="form-control" name="password" required="" id="id_password">
+            <br> 
+            <p><a href="{% url 'password_reset'%}">forgot password</a> </p>  
+          <button type="submit" class="form-control btn btn-warning rounded"  >Login</button>
+
+         
+
+        </div>
+        <div class="col-2"></div>
+    </div>
+  </div>
+  <div class="col bg-warning"  style="   background: linear-gradient(to right, #22c1c3, #fdbb2d); " >
+  </div>
+
+  
   <!-- <form method="POST">
       {% csrf_token %}
       <input type="input" class="form-control" name="username" id="inputEmail" placeholder="Username" required >

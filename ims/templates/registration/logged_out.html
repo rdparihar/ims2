@@ -1,8 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h5>Logged out!</h5>  
-<br>
+<div class="row  mt-5">
+    <div class="col">
+    <div class="row py-5  px-4 ">
+          <div class="col py-5 px-4">
+              <div class="lh-100 text-dark-30 ">
+                <h4>Logged out!</h4>     <br>               
+                <p><a href="{% url 'login'%}">Click here to login again.</a> </p>          
+                
+              </div>
+              <!-- <a href="{% url 'login'%}" class="form-control btn btn-warning rounded">Click here to login again.</a>            -->
+              
+          </div>
+          <div class="col"></div>
+      </div>
+    </div>
+    <div class="col bg-warning"  style="background: linear-gradient(to right, #22c1c3, #fdbb2d); " >
+    </div>
 
-<a href="{% url 'login'%}">Click here to login again.</a>
+  
+<br></div>
+
 {% endblock %}
