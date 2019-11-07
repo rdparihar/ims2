@@ -17,6 +17,7 @@ urlpatterns = [
     path('closing/', views.StockClosingView.as_view(), name='stock-closing'),
     path('purchase/', views.StockPurchaseView.as_view(), name='stock-purchase'),
     path('shifting/', views.StockClosingView.as_view(), name='stock-shifting'),
+    path('test2/', views.test, name="test2"),
 
     
     # path('shop/', TemplateView.as_view(template_name='shop.html'), name="shop"),

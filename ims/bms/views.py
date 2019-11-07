@@ -21,6 +21,9 @@ from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in
 
 
+def test(request):
+    print (request)
+    return HttpResponse("hello", request)
 
 @receiver(user_logged_in)
 def sig_user_logged_in(sender, user, request, **kwargs):
